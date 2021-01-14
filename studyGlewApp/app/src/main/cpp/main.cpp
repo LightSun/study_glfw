@@ -205,7 +205,7 @@ Java_com_heaven7_android_glew_app_JNIApi_nInit(JNIEnv
     latinShaper.addFeature(HBFeature::KerningOn);
     _width = width;
     _height = height;
-    gl::createShaderProgram();//TODO crash?
+    gl::createShaderProgram();
 
     // ask for some meshes, this is not optimal since every glyph has its
     // own texture, should use an atlas than contains glyph inside
