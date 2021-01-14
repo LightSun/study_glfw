@@ -7,6 +7,7 @@ import android.Manifest;
 import android.opengl.GLSurfaceView;
 import android.os.Bundle;
 import android.os.Environment;
+import android.view.View;
 
 import com.heaven7.core.util.PermissionHelper;
 import com.heaven7.java.pc.schedulers.Schedulers;
@@ -19,9 +20,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        //setContentView(R.layout.activity_main);
-
-        requestPermission();
+        setContentView(R.layout.activity_main);
     }
 
     @Override
@@ -65,5 +64,9 @@ public class MainActivity extends AppCompatActivity {
         view.setRenderer(mRender);
         mRender.setFontDir(Environment.getExternalStorageDirectory() + "/temp/fonts");
         setContentView(view);
+    }
+
+    public void onClickStart(View view) {
+        requestPermission();
     }
 }

@@ -9,6 +9,7 @@
 //#include <GLES/glext.h>
 #endif
 #include <vector>
+#include "log.h"
 
 namespace gl {
     GLuint program;
@@ -52,11 +53,20 @@ namespace gl {
         "void main() {\n"
         "    gl_FragColor = texture2D(u_tex, f_uv);\n"
         "}\n";
-
+    static void checkGLError(const char* op) {
+        int error;
+        while ((error = glGetError()) != GL_NO_ERROR) {
+            LOGE("%s: glError %d", op , error);
+        }
+    }
     void createShaderProgram() {
+        LOGD("----------- start createShaderProgram -------------");
         program = glCreateProgram();
+        checkGLError("glCreateProgram");
         vertex = glCreateShader(GL_VERTEX_SHADER);
+        checkGLError("glCreateShader vertex");
         fragment = glCreateShader(GL_FRAGMENT_SHADER);
+        checkGLError("glCreateShader fragment");
 
         glShaderSource(fragment, 1, &fragmentSrc, NULL);
         glCompileShader(fragment);

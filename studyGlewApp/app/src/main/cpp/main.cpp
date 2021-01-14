@@ -155,11 +155,11 @@ Java_com_heaven7_android_glew_app_JNIApi_nInit(JNIEnv
 
     clock_t begin, end;
 
-    MERGE_STR2(fontDir, "DejaVuSerif.ttf", latinShaper.set(ch, &_xlib));
-    MERGE_STR2(fontDir, "amiri-regular.ttf", arabicShaper.set(ch, &_xlib));
-    MERGE_STR2(fontDir, "DejaVuSerif.ttf", russianShaper.set(ch, &_xlib));
-    MERGE_STR2(fontDir, "fireflysung.ttf", hanShaper.set(ch, &_xlib));
-    MERGE_STR2(fontDir, "Sanskrit2003.ttf", hindiShaper.set(ch, &_xlib));
+    MERGE_STR2(fontDir, "/DejaVuSerif.ttf", latinShaper.set(ch, &_xlib));
+    MERGE_STR2(fontDir, "/amiri-regular.ttf", arabicShaper.set(ch, &_xlib));
+    MERGE_STR2(fontDir, "/DejaVuSerif.ttf", russianShaper.set(ch, &_xlib));
+    MERGE_STR2(fontDir, "/fireflysung.ttf", hanShaper.set(ch, &_xlib));
+    MERGE_STR2(fontDir, "/Sanskrit2003.ttf", hindiShaper.set(ch, &_xlib));
 
     latinShaper.init();
     arabicShaper.init();
@@ -205,7 +205,7 @@ Java_com_heaven7_android_glew_app_JNIApi_nInit(JNIEnv
     latinShaper.addFeature(HBFeature::KerningOn);
     _width = width;
     _height = height;
-    gl::createShaderProgram();
+    gl::createShaderProgram();//TODO crash?
 
     // ask for some meshes, this is not optimal since every glyph has its
     // own texture, should use an atlas than contains glyph inside
