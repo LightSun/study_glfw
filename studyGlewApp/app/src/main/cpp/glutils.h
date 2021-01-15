@@ -60,6 +60,7 @@ namespace gl {
         "}\n";
 
     static const GLchar* fragmentSrc =
+         "precision mediump float;\n"
         "uniform sampler2D u_tex;\n"
         "varying vec2 f_uv;\n"
         "void main() {\n"
@@ -229,7 +230,9 @@ namespace gl {
         checkGLError("getTextureId: glGenTextures");
         glBindTexture(GL_TEXTURE_2D, textureId);
         checkGLError("getTextureId: glBindTexture");
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_ALPHA, GL_UNSIGNED_BYTE, 0);
+        //opengl-es :internalformat 和 format 必须一致. 这点和pc 不同
+       // glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_ALPHA, GL_UNSIGNED_BYTE, 0);
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_ALPHA, width, height, 0, GL_ALPHA, GL_UNSIGNED_BYTE, 0);
         checkGLError("getTextureId: glTexImage2D");
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
@@ -243,7 +246,7 @@ namespace gl {
 
     void uploadTextureData(unsigned int textureId, int width, int height, unsigned char* data) {
         glBindTexture(GL_TEXTURE_2D, textureId);
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_ALPHA, GL_UNSIGNED_BYTE, data);
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_ALPHA, width, height, 0, GL_ALPHA, GL_UNSIGNED_BYTE, data);
         checkGLError("uploadTextureData: ");
     }
 }

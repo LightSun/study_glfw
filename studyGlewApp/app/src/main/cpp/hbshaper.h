@@ -108,6 +108,7 @@ vector<gl::Mesh*> HBShaper::drawText(HBText& text, float x, float y) {
         }
 
         auto tdata = new unsigned char[twidth * theight] ();
+        memset(tdata, 0, twidth * theight * sizeof(unsigned char));
 
         for(int iy = 0; iy < glyph->height; ++iy) {
             memcpy(tdata + iy * twidth, glyph->buffer + iy * glyph->width, glyph->width);
