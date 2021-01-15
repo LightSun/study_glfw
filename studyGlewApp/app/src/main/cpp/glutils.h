@@ -9,15 +9,22 @@
 //#include <GLES/glext.h>
 #endif
 #include <vector>
+#include "Matrix4f.h"
 #include "log.h"
 
 namespace gl {
     GLuint program;
     GLuint vertex;
     GLuint fragment;
+
     GLint positionLoc;
     GLint uvLoc;
+    GLint vMatrix;
     bool exist;
+
+    h7::Matrix4f mvpMat;
+    GLint uTex;
+    int textureType = 0;
 
     struct Vertex {
         float x, y;
@@ -37,13 +44,18 @@ namespace gl {
         GLuint vertexBuffer;
         GLuint indexBuffer;
     } Mesh;
-
+    /*I/AdrenoGLES: ERROR: 0:5: 'gl_ProjectionMatrix' : undeclared identifier
+    ERROR: 0:5: 'gl_ModelViewMatrix' : undeclared identifier
+    ERROR: 2 compilation errors.  No code generated.
+     I/AdrenoGLES: ERROR: 0:5: 'gl_ProjectionMatrix' : undeclared identifier
+    ERROR: 0:5: 'gl_ModelViewMatrix' : undeclared identifier*/
     static const GLchar* vertexSrc =
         "attribute vec4 a_position;\n"
+        "uniform mat4 vMatrix;\n"
         "attribute vec2 a_uv;\n"
         "varying vec2 f_uv;\n"
         "void main() {\n"
-        "gl_Position = gl_ProjectionMatrix * gl_ModelViewMatrix * a_position;\n"
+        "gl_Position = vMatrix * a_position;\n"
         "f_uv = a_uv;\n"
         "}\n";
 
@@ -53,7 +65,7 @@ namespace gl {
         "void main() {\n"
         "    gl_FragColor = texture2D(u_tex, f_uv);\n"
         "}\n";
-    static void checkGLError(const char* op) {
+    static inline void checkGLError(const char* op) {
         int error;
         while ((error = glGetError()) != GL_NO_ERROR) {
             LOGE("%s: glError %d", op , error);
@@ -69,25 +81,42 @@ namespace gl {
         checkGLError("glCreateShader fragment");
 
         glShaderSource(fragment, 1, &fragmentSrc, NULL);
+        checkGLError("glShaderSource fragment");
         glCompileShader(fragment);
+        checkGLError("glCompileShader fragment");
         glAttachShader(program, fragment);
+        checkGLError("glAttachShader fragment");
 
         glShaderSource(vertex, 1, &vertexSrc, NULL);
+        checkGLError("glShaderSource vertex");
         glCompileShader(vertex);
+        checkGLError("glCompileShader vertex");
         glAttachShader(program, vertex);
+        checkGLError("glAttachShader vertex");
 
         glLinkProgram(program);
+        checkGLError("glLinkProgram");
 
-        glUniform1i(glGetUniformLocation(program, "u_tex"), 0);
+        uTex = glGetUniformLocation(program, "u_tex"); //must use glUniform1i on draw
+        checkGLError("glGetUniformLocation u_tex");
 
         positionLoc = glGetAttribLocation(program, "a_position");
+        checkGLError("glGetAttribLocation: a_position ");
         uvLoc =	glGetAttribLocation(program, "a_uv");
+        checkGLError("glGetAttribLocation: a_uv ");
+
+        vMatrix = glGetUniformLocation(program, "vMatrix");
+        checkGLError("glGetUniformLocation: vMatrix ");
     }
 
     void render(const std::vector<Mesh*> meshes) {
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         glUseProgram(program);
+
+        //glUniform1i: 对这几个纹理采样器变量进行设置 . ps: https://blog.csdn.net/mumuzi_1/article/details/62047112
+        glActiveTexture(GL_TEXTURE0 + textureType);
+        glUniform1i(uTex, textureType);
 
         for(auto mesh: meshes) {
             glBindBuffer(GL_ARRAY_BUFFER, mesh->vertexBuffer);
@@ -106,7 +135,7 @@ namespace gl {
     }
 
     void resize(int w, int h) {
-        glViewport(0, 0, w, h);
+        mvpMat.loadOrthoWindow(w, h);
     }
 
     void finish() {
@@ -117,22 +146,25 @@ namespace gl {
 
     //不能同时连接gles1 和gles2 ??
     void initGL(int width, int height) {
-       /* glClearColor(1, 1, 1, 1);
+        glClearColor(1, 1, 1, 1);
         glViewport(0, 0, width, height);
 
        // createShaderProgram();
 
-        glMatrixMode(GL_PROJECTION);
+       // GLES20.glUniformMatrix4fv(mMatrix, 1, false, mMVPMatrix, 0);
+        glUniformMatrix4fv(vMatrix, 1, static_cast<GLboolean>(false), mvpMat.getValues());
+
+       /* glMatrixMode(GL_PROJECTION);
         glLoadIdentity();
         //glOrtho(0, width, 0, height, -1, 1);
         glOrthox(0, width, 0, height, -1, 1);
 
         glMatrixMode(GL_MODELVIEW);
-        glLoadIdentity();
+        glLoadIdentity();*/
 
         glDisable(GL_DEPTH_TEST);
         glEnable(GL_BLEND);
-        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);*/
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     }
 
     void loop(const std::vector<Mesh*> meshes) {
@@ -164,7 +196,7 @@ namespace gl {
         }
     }
 
-    void deleteMeshes(const std::vector<Mesh*> meshes) {
+    void deleteMeshes(std::vector<Mesh*> meshes) {
         for(auto mesh: meshes) {
             delete[] mesh->textureData;
 
@@ -176,6 +208,7 @@ namespace gl {
             delete[] mesh->indices;
             delete mesh;
         }
+        meshes.clear();
     }
 
     unsigned int getTextureId(int width, int height) {

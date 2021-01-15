@@ -32,21 +32,6 @@ public class FontRender implements GLSurfaceView.Renderer {
 
     @Override
     public void onDrawFrame(GL10 gl) {
-        gl.glClearColor(1, 1, 1, 1);
-        gl.glViewport(0, 0, width, height);
-
-        gl.glMatrixMode(GL10.GL_PROJECTION);
-        gl.glLoadIdentity();
-        //glOrtho(0, width, 0, height, -1, 1);
-        gl.glOrthox(0, width, 0, height, -1, 1);
-
-        gl.glMatrixMode(GL10.GL_MODELVIEW);
-        gl.glLoadIdentity();
-
-        gl.glDisable(GL10.GL_DEPTH_TEST);
-        gl.glEnable(GL10.GL_BLEND);
-        gl.glBlendFunc(GL10.GL_SRC_ALPHA, GL10.GL_ONE_MINUS_SRC_ALPHA);
-
         api.draw();
     }
 }

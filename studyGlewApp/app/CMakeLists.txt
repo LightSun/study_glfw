@@ -13,6 +13,12 @@ else ()
     set(OPENGL_LIB GLESv3)
 endif (${ANDROID_PLATFORM_LEVEL} LESS 11)
 
+set(LIB_DIR ${CMAKE_SOURCE_DIR}/src/main/lib/${ANDROID_ABI})
+include_directories(src/main/cpp/include)
+
+add_library(bx STATIC IMPORTED)
+set_target_properties(bx PROPERTIES IMPORTED_LOCATION ${LIB_DIR}/libbxDebug.a)
+
 #halfbuzz + freetype + icu
 set(HARFBUZZ_BUILD_ICU ON CACHE BOOL "Enable building of ICU")
 set(HARFBUZZ_BUILD_UCDN ON CACHE BOOL "Enable building of UCDN")
@@ -36,6 +42,7 @@ set_target_properties(studyGlfw PROPERTIES LINKER_LANGUAGE CXX)
 
 target_link_libraries(studyGlfw
     ${OPENGL_LIB}
+    bx
     harfbuzz
     freetype
     icucommon
