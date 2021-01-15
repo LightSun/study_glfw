@@ -99,8 +99,13 @@ vector<gl::Mesh*> HBShaper::drawText(HBText& text, float x, float y) {
     for(int i = 0; i < glyphCount; ++i) {
         Glyph* glyph = lib->rasterize(face, glyphInfo[i].codepoint);
 
+        //opengl glTexImage2D 一般宽高要是2^n
         int twidth = pow(2, ceil(log(glyph->width)/log(2)));
         int theight = pow(2, ceil(log(glyph->height)/log(2)));
+
+        if(twidth <=0 || theight <= 0){
+            continue;
+        }
 
         auto tdata = new unsigned char[twidth * theight] ();
 

@@ -28,6 +28,5 @@ public:
 
 private:
 	FT_Library lib;
-	FT_Face m_ftFace;
 	int force_ucs2_charmap(FT_Face ftf);
 };

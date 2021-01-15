@@ -19,7 +19,11 @@ FT_Face* FreeTypeLib::loadFace(const char* fontName, int ptSize, int deviceHDPI,
 
     force_ucs2_charmap(*face);
     FT_Set_Char_Size(*face, 0, ptSize, deviceHDPI, deviceVDPI);
-
+// For Some Twisted Reason, FreeType Measures Font Size
+    // In Terms Of 1/64ths Of Pixels.  Thus, To Make A Font
+    // h Pixels High, We Need To Request A Size Of h*64.
+    // (h << 6 Is Just A Prettier Way Of Writing h*64)
+   // FT_Set_Char_Size( face, h << 6, h << 6, 96, 96);
     return face;
 }
 
@@ -58,6 +62,7 @@ Glyph* FreeTypeLib::rasterize(FT_Face* face, uint32_t glyphIndex) const {
     FT_Render_Glyph(slot, FT_RENDER_MODE_NORMAL);
 
     FT_Bitmap ftBitmap = slot->bitmap;
+    LOGD("FT_Bitmap pixformat: %d", ftBitmap.pixel_mode);
 
     g->buffer = ftBitmap.buffer;
     g->width = ftBitmap.width;

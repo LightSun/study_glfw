@@ -113,10 +113,17 @@ namespace gl {
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         glUseProgram(program);
+        //所有的shader 变量设置必须在glUseProgram后
+
+        // GLES20.glUniformMatrix4fv(mMatrix, 1, false, mMVPMatrix, 0);
+        glUniformMatrix4fv(vMatrix, 1, static_cast<GLboolean>(false), mvpMat.getValues());
+        checkGLError("glUniformMatrix4fv: vMatrix");
 
         //glUniform1i: 对这几个纹理采样器变量进行设置 . ps: https://blog.csdn.net/mumuzi_1/article/details/62047112
         glActiveTexture(GL_TEXTURE0 + textureType);
+        checkGLError("glActiveTexture: sample2d");
         glUniform1i(uTex, textureType);
+        checkGLError("glUniform1i: sample2d");
 
         for(auto mesh: meshes) {
             glBindBuffer(GL_ARRAY_BUFFER, mesh->vertexBuffer);
@@ -129,6 +136,8 @@ namespace gl {
             glVertexAttribPointer(uvLoc, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (const GLvoid*)(2 * sizeof(float)));
 
             glDrawElements(GL_TRIANGLES, mesh->nbIndices, GL_UNSIGNED_SHORT, 0);
+
+            checkGLError("render: mesh");
         }
 
         glUseProgram(0);
@@ -151,9 +160,6 @@ namespace gl {
 
        // createShaderProgram();
 
-       // GLES20.glUniformMatrix4fv(mMatrix, 1, false, mMVPMatrix, 0);
-        glUniformMatrix4fv(vMatrix, 1, static_cast<GLboolean>(false), mvpMat.getValues());
-
        /* glMatrixMode(GL_PROJECTION);
         glLoadIdentity();
         //glOrtho(0, width, 0, height, -1, 1);
@@ -165,6 +171,7 @@ namespace gl {
         glDisable(GL_DEPTH_TEST);
         glEnable(GL_BLEND);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+        glEnable(GL_TEXTURE_2D);
     }
 
     void loop(const std::vector<Mesh*> meshes) {
@@ -185,14 +192,17 @@ namespace gl {
             }
 
             glBindTexture(GL_TEXTURE_2D, mesh->textureId);
+            checkGLError("uploadMeshes: glBindTexture");
 
             glGenBuffers(1, &mesh->vertexBuffer);
             glBindBuffer(GL_ARRAY_BUFFER, mesh->vertexBuffer);
             glBufferData(GL_ARRAY_BUFFER, data.size() * sizeof(float), &data[0], GL_STATIC_DRAW);
+            checkGLError("uploadMeshes: vertexBuffer");
 
             glGenBuffers(1, &mesh->indexBuffer);
             glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mesh->indexBuffer);
             glBufferData(GL_ELEMENT_ARRAY_BUFFER, mesh->nbIndices * sizeof(unsigned short), mesh->indices, GL_STATIC_DRAW);
+            checkGLError("uploadMeshes: indexBuffer");
         }
     }
 
@@ -212,18 +222,28 @@ namespace gl {
     }
 
     unsigned int getTextureId(int width, int height) {
+        LOGD("getTextureId: w = %d, h = %d", width, height);
         GLuint textureId;
 
         glGenTextures(1, &textureId);
+        checkGLError("getTextureId: glGenTextures");
         glBindTexture(GL_TEXTURE_2D, textureId);
+        checkGLError("getTextureId: glBindTexture");
         glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_ALPHA, GL_UNSIGNED_BYTE, 0);
+        checkGLError("getTextureId: glTexImage2D");
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
+        glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S ,GL_CLAMP_TO_EDGE);
+        glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+
+        checkGLError("getTextureId: glTexParameteri");
         return textureId;
     }
 
     void uploadTextureData(unsigned int textureId, int width, int height, unsigned char* data) {
         glBindTexture(GL_TEXTURE_2D, textureId);
         glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_ALPHA, GL_UNSIGNED_BYTE, data);
+        checkGLError("uploadTextureData: ");
     }
 }
