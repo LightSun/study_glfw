@@ -207,6 +207,32 @@ Java_com_heaven7_android_glew_app_JNIApi_nInit(JNIEnv
     _height = height;
     gl::createShaderProgram();
 
+    //prepare font data
+    meshes.clear();
+    // ask for some meshes, this is not optimal since every glyph has its
+    // own texture, should use an atlas than contains glyph inside
+    //       ->>>>>>> e.g. DON'T DO THIS <<<<<<<<<-
+   /* for(auto mesh: latinShaper.drawText(hbt1, 20, 320)) {
+        meshes.push_back(mesh);
+    }
+
+    for(auto mesh: arabicShaper.drawText(hbt2, 20, 220)) {
+        meshes.push_back(mesh);
+    } */
+
+    for(auto mesh: russianShaper.drawText(hbt3, 20, 120)) {
+        meshes.push_back(mesh);
+    }
+
+    for(auto mesh: hanShaper.drawText(hbt4, 100, 100)) {
+        meshes.push_back(mesh);
+    }
+/*
+    for(auto mesh: hindiShaper.drawText(hbt5, 20, 20)) {
+        meshes.push_back(mesh);
+    }*/
+    gl::uploadMeshes(meshes);
+
     env->ReleaseStringUTFChars(font_dir, fontDir);
 }
 
@@ -231,33 +257,8 @@ Java_com_heaven7_android_glew_app_JNIApi_nDraw(JNIEnv
     _begin = clock();
     gl::initGL(_width, _height);
 
-    meshes.clear();
-    // ask for some meshes, this is not optimal since every glyph has its
-    // own texture, should use an atlas than contains glyph inside
-    //       ->>>>>>> e.g. DON'T DO THIS <<<<<<<<<-
-    for(auto mesh: latinShaper.drawText(hbt1, 20, 320)) {
-        meshes.push_back(mesh);
-    }
-
-    for(auto mesh: arabicShaper.drawText(hbt2, 20, 220)) {
-        meshes.push_back(mesh);
-    }
-
-    for(auto mesh: russianShaper.drawText(hbt3, 20, 120)) {
-        meshes.push_back(mesh);
-    }
-
-    for(auto mesh: hanShaper.drawText(hbt4, 700, 380)) {
-        meshes.push_back(mesh);
-    }
-
-    for(auto mesh: hindiShaper.drawText(hbt5, 20, 20)) {
-        meshes.push_back(mesh);
-    }
-    gl::uploadMeshes(meshes);
-
     gl::render(meshes);
-    gl::deleteMeshes(meshes);
+    //gl::deleteMeshes(meshes);
 
     _end = clock();
 
@@ -271,5 +272,5 @@ Java_com_heaven7_android_glew_app_JNIApi_nDestroy(JNIEnv
                                                   jobject thiz
 ){
     gl::finish();
-    //gl::deleteMeshes(meshes);
+    gl::deleteMeshes(meshes);
 }

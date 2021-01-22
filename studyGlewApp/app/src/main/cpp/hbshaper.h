@@ -61,16 +61,16 @@ class HBShaper {
 
 HBShaper::HBShaper(const char* fontFile, FreeTypeLib* fontLib) {
     lib = fontLib;
-    float size = 50;
-    face = lib->loadFace(fontFile, size * 64, 72, 72);
+    float size = 20;
+    face = lib->loadFace(fontFile, size, 72, 72);
 }
 HBShaper::HBShaper() {
 
 }
 void HBShaper::set(const char* fontFile, FreeTypeLib *fontLib) {
     lib = fontLib;
-    float size = 50;
-    face = lib->loadFace(fontFile, size * 64, 72, 72);
+    float size = 20;
+    face = lib->loadFace(fontFile, size, 72, 72);
 }
 
 void HBShaper::addFeature(hb_feature_t feature) {
@@ -99,20 +99,29 @@ vector<gl::Mesh*> HBShaper::drawText(HBText& text, float x, float y) {
     for(int i = 0; i < glyphCount; ++i) {
         Glyph* glyph = lib->rasterize(face, glyphInfo[i].codepoint);
 
-        //opengl glTexImage2D 一般宽高要是2^n
+        //opengl glTexImage2D 一般宽高要是2^n (opengles 1)
         int twidth = pow(2, ceil(log(glyph->width)/log(2)));
         int theight = pow(2, ceil(log(glyph->height)/log(2)));
 
         if(twidth <=0 || theight <= 0){
             continue;
         }
+        //rgba
+        auto tdata = new unsigned char[twidth * theight * 4] ();
+        //memset(tdata, 0, twidth * theight * sizeof(unsigned char));
 
-        auto tdata = new unsigned char[twidth * theight] ();
-        memset(tdata, 0, twidth * theight * sizeof(unsigned char));
-
-        for(int iy = 0; iy < glyph->height; ++iy) {
-            memcpy(tdata + iy * twidth, glyph->buffer + iy * glyph->width, glyph->width);
+        for (int j = 0; j < theight; ++j) {
+            for (int k = 0; k < twidth; ++k) {
+                unsigned char _vl =  (k >= glyph->width || j >= glyph->height) ? 0 : glyph->buffer[k + glyph->width*j];
+                tdata[(4*i + (theight - j - 1) * twidth * 4)  ] = 0xFF;
+                tdata[(4*i + (theight - j - 1) * twidth * 4)+1] = 0xFF;
+                tdata[(4*i + (theight - j - 1) * twidth * 4)+2] = 0xFF;
+                tdata[(4*i + (theight - j - 1) * twidth * 4)+3] = _vl;
+            }
         }
+        /*for(int iy = 0; iy < glyph->height; ++iy) {
+            memcpy(tdata + iy * twidth, glyph->buffer + iy * glyph->width, glyph->width);
+        }*/
 
 #ifdef DEBUG
         for(int iy = 0; iy < glyph->height; ++iy) {
@@ -161,7 +170,9 @@ vector<gl::Mesh*> HBShaper::drawText(HBText& text, float x, float y) {
         m->nbIndices = 6;
         m->nbVertices = 4;
 
-        gl::uploadTextureData(m->textureId, twidth, theight, tdata);
+        //gl::uploadTextureData(m->textureId, twidth, theight, tdata);
+        m->width = twidth;
+        m->height = theight;
 
         meshes.push_back(m);
 

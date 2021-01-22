@@ -3,8 +3,11 @@
 //#include "import_gl.h"
 
 #if defined(ANDROID)
-#include <GLES2/gl2.h>
-#include <GLES2/gl2ext.h>
+//#include <GLES2/gl2.h>
+//#include <GLES2/gl2ext.h>
+
+#include <GLES3/gl3.h>
+#include <GLES3/gl3ext.h>
 //#include <GLES/gl.h>
 //#include <GLES/glext.h>
 #endif
@@ -43,6 +46,9 @@ namespace gl {
         unsigned int nbVertices;
         GLuint vertexBuffer;
         GLuint indexBuffer;
+        GLuint textureCors;
+        int width;
+        int height;
     } Mesh;
     /*I/AdrenoGLES: ERROR: 0:5: 'gl_ProjectionMatrix' : undeclared identifier
     ERROR: 0:5: 'gl_ModelViewMatrix' : undeclared identifier
@@ -51,11 +57,12 @@ namespace gl {
     ERROR: 0:5: 'gl_ModelViewMatrix' : undeclared identifier*/
     static const GLchar* vertexSrc =
         "attribute vec4 a_position;\n"
-        "uniform mat4 vMatrix;\n"
+       // "uniform mat4 vMatrix;\n"
         "attribute vec2 a_uv;\n"
         "varying vec2 f_uv;\n"
         "void main() {\n"
-        "gl_Position = vMatrix * a_position;\n"
+       // "gl_Position = vMatrix * a_position;\n"
+        "gl_Position = a_position;\n"
         "f_uv = a_uv;\n"
         "}\n";
 
@@ -106,8 +113,8 @@ namespace gl {
         uvLoc =	glGetAttribLocation(program, "a_uv");
         checkGLError("glGetAttribLocation: a_uv ");
 
-        vMatrix = glGetUniformLocation(program, "vMatrix");
-        checkGLError("glGetUniformLocation: vMatrix ");
+      /*  vMatrix = glGetUniformLocation(program, "vMatrix");
+        checkGLError("glGetUniformLocation: vMatrix ");*/
     }
 
     void render(const std::vector<Mesh*> meshes) {
@@ -117,30 +124,53 @@ namespace gl {
         //所有的shader 变量设置必须在glUseProgram后
 
         // GLES20.glUniformMatrix4fv(mMatrix, 1, false, mMVPMatrix, 0);
-        glUniformMatrix4fv(vMatrix, 1, static_cast<GLboolean>(false), mvpMat.getValues());
-        checkGLError("glUniformMatrix4fv: vMatrix");
+        //glUniformMatrix4fv(vMatrix, 1, GL_FALSE, mvpMat.getValues());
+       // checkGLError("glUniformMatrix4fv: vMatrix");
 
-        //glUniform1i: 对这几个纹理采样器变量进行设置 . ps: https://blog.csdn.net/mumuzi_1/article/details/62047112
-        glActiveTexture(GL_TEXTURE0 + textureType);
-        checkGLError("glActiveTexture: sample2d");
-        glUniform1i(uTex, textureType);
-        checkGLError("glUniform1i: sample2d");
+        for (int i = 0; i < meshes.size(); ++i) {
+            LOGD("render: %d", i);
+            auto mesh = meshes[i];
+            glBindBuffer(GL_ARRAY_BUFFER, mesh->vertexBuffer);
+            glEnableVertexAttribArray(positionLoc);
+            glVertexAttribPointer(positionLoc, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), 0);
+            //glBindBuffer(GL_ARRAY_BUFFER, GL_NONE);
 
-        for(auto mesh: meshes) {
+            glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mesh->indexBuffer);
+            glEnableVertexAttribArray(uvLoc);
+            glVertexAttribPointer(uvLoc, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (const GLvoid*)(2 * sizeof(float)));
+            //glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, GL_NONE);
+
+            //upload texture
+            glActiveTexture(GL_TEXTURE0 + i);
+            glBindTexture(GL_TEXTURE_2D, mesh->textureId);
+            glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, mesh->width, mesh->height, 0, GL_RGBA, GL_UNSIGNED_BYTE, mesh->textureData);
+
+            glUniform1i(uTex, i);
+            checkGLError("glUniform1i: sample2d");
+            glDrawElements(GL_TRIANGLES, mesh->nbIndices, GL_UNSIGNED_SHORT, 0);
+            //glEnableVertexAttribArray(0);
+            glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, GL_NONE);
+            glBindBuffer(GL_ARRAY_BUFFER, GL_NONE);
+            glBindTexture(GL_TEXTURE_2D, GL_NONE);
+        }
+        glActiveTexture(GL_TEXTURE0);
+       /* for(auto mesh: meshes) {
+            //glUniform1i: 对这几个纹理采样器变量进行设置 . ps: https://blog.csdn.net/mumuzi_1/article/details/62047112
+            glActiveTexture(GL_TEXTURE0 + textureType);
+
+            checkGLError("glActiveTexture: sample2d");
             glBindBuffer(GL_ARRAY_BUFFER, mesh->vertexBuffer);
             glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mesh->indexBuffer);
             glBindTexture(GL_TEXTURE_2D, mesh->textureId);
 
-            glEnableVertexAttribArray(positionLoc);
             glVertexAttribPointer(positionLoc, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), 0);
-            glEnableVertexAttribArray(uvLoc);
+            glEnableVertexAttribArray(positionLoc);
             glVertexAttribPointer(uvLoc, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (const GLvoid*)(2 * sizeof(float)));
+            glEnableVertexAttribArray(uvLoc);
 
             glDrawElements(GL_TRIANGLES, mesh->nbIndices, GL_UNSIGNED_SHORT, 0);
-
             checkGLError("render: mesh");
-        }
-
+        }*/
         glUseProgram(0);
     }
 
@@ -170,9 +200,14 @@ namespace gl {
         glLoadIdentity();*/
 
         glDisable(GL_DEPTH_TEST);
+        checkGLError("initGL: glDisable(GL_DEPTH_TEST)");
         glEnable(GL_BLEND);
+        checkGLError("initGL: glEnable");
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-        glEnable(GL_TEXTURE_2D);
+        checkGLError("initGL: glBlendFunc");
+
+        //glEnable(GL_TEXTURE_2D); //delete in gles .glError 1280
+        //checkGLError("initGL: glActiveTexture(GL_TEXTURE0)");
     }
 
     void loop(const std::vector<Mesh*> meshes) {
@@ -182,6 +217,12 @@ namespace gl {
     }
 
     void uploadMeshes(const std::vector<Mesh*> meshes) {
+        GLfloat textureCoords[] = {
+                0.0f,  0.0f,        // TexCoord 0
+                0.0f,  1.0f,        // TexCoord 1
+                1.0f,  1.0f,        // TexCoord 2
+                1.0f,  0.0f         // TexCoord 3
+        };
         for(auto mesh: meshes) {
             std::vector<float> data;
 
@@ -194,11 +235,15 @@ namespace gl {
 
             glBindTexture(GL_TEXTURE_2D, mesh->textureId);
             checkGLError("uploadMeshes: glBindTexture");
-
+            //vbo
             glGenBuffers(1, &mesh->vertexBuffer);
             glBindBuffer(GL_ARRAY_BUFFER, mesh->vertexBuffer);
             glBufferData(GL_ARRAY_BUFFER, data.size() * sizeof(float), &data[0], GL_STATIC_DRAW);
             checkGLError("uploadMeshes: vertexBuffer");
+
+         /*   glGenBuffers(1, &mesh->textureCors);
+            glBindBuffer(GL_ARRAY_BUFFER, mesh->textureCors);
+            glBufferData(GL_ARRAY_BUFFER, sizeof(textureCoords), textureCoords, GL_STATIC_DRAW);*/
 
             glGenBuffers(1, &mesh->indexBuffer);
             glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mesh->indexBuffer);
@@ -207,7 +252,7 @@ namespace gl {
         }
     }
 
-    void deleteMeshes(std::vector<Mesh*> meshes) {
+    void deleteMeshes(std::vector<Mesh*>& meshes) {
         for(auto mesh: meshes) {
             delete[] mesh->textureData;
 
@@ -224,21 +269,22 @@ namespace gl {
 
     unsigned int getTextureId(int width, int height) {
         LOGD("getTextureId: w = %d, h = %d", width, height);
+        checkGLError("getTextureId: pre glGenTextures");
         GLuint textureId;
-
         glGenTextures(1, &textureId);
         checkGLError("getTextureId: glGenTextures");
         glBindTexture(GL_TEXTURE_2D, textureId);
         checkGLError("getTextureId: glBindTexture");
         //opengl-es :internalformat 和 format 必须一致. 这点和pc 不同
        // glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_ALPHA, GL_UNSIGNED_BYTE, 0);
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_ALPHA, width, height, 0, GL_ALPHA, GL_UNSIGNED_BYTE, 0);
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, 0);
         checkGLError("getTextureId: glTexImage2D");
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
         glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S ,GL_CLAMP_TO_EDGE);
         glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+        glBindTexture(GL_TEXTURE_2D, GL_NONE);
 
         checkGLError("getTextureId: glTexParameteri");
         return textureId;
@@ -246,7 +292,7 @@ namespace gl {
 
     void uploadTextureData(unsigned int textureId, int width, int height, unsigned char* data) {
         glBindTexture(GL_TEXTURE_2D, textureId);
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_ALPHA, width, height, 0, GL_ALPHA, GL_UNSIGNED_BYTE, data);
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA , width, height, 0, GL_RGBA , GL_UNSIGNED_BYTE, data);
         checkGLError("uploadTextureData: ");
     }
 }

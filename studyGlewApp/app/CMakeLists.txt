@@ -21,22 +21,51 @@ set_target_properties(bx PROPERTIES IMPORTED_LOCATION ${LIB_DIR}/libbxDebug.a)
 
 #halfbuzz + freetype + icu
 set(HARFBUZZ_BUILD_ICU ON CACHE BOOL "Enable building of ICU")
-set(HARFBUZZ_BUILD_UCDN ON CACHE BOOL "Enable building of UCDN")
+set(HARFBUZZ_BUILD_UCDN OFF CACHE BOOL "Enable building of UCDN")
 
 set(DIR_HALFBUZZ_FREETYPE src/main/cpp/harfbuzz-icu-freetype)
 include_directories(${DIR_HALFBUZZ_FREETYPE}/freetype/include)
 include_directories(${DIR_HALFBUZZ_FREETYPE}/harfbuzz/src)
+include_directories(${DIR_HALFBUZZ_FREETYPE}/harfbuzz-generated)
+include_directories(${DIR_HALFBUZZ_FREETYPE}/icu/common)
 
-add_subdirectory(${DIR_HALFBUZZ_FREETYPE} harfbuzz_out)
+#glm and alfons
+include_directories(src/main/cpp)
+include_directories(src/main/cpp/alfons/src)
+include_directories(src/main/cpp/alfons/src/linebreak)
+include_directories(src/main/cpp/alfons/src/logger)
+
+set(ALFONS_BASE src/main/cpp/alfons/src)
+set(ALFONS_SRC
+  ${ALFONS_BASE}/alfons/alfons.cpp
+  ${ALFONS_BASE}/alfons/fontManager.cpp
+  ${ALFONS_BASE}/alfons/fontFace.cpp
+  ${ALFONS_BASE}/alfons/langHelper.cpp
+  ${ALFONS_BASE}/alfons/font.cpp
+  ${ALFONS_BASE}/alfons/textBatch.cpp
+  ${ALFONS_BASE}/alfons/atlas.cpp
+  ${ALFONS_BASE}/alfons/textShaper.cpp
+  ${ALFONS_BASE}/alfons/quadMatrix.cpp
+  ${ALFONS_BASE}/alfons/path/lineSampler.cpp
+  ${ALFONS_BASE}/alfons/path/splinePath.cpp
+  # TODO part of icu-extras
+  ${ALFONS_BASE}/alfons/scrptrun.cpp
+
+  ${ALFONS_BASE}/linebreak/linebreak.c
+  ${ALFONS_BASE}/linebreak/linebreakdata.c
+  ${ALFONS_BASE}/linebreak/linebreakdef.c
+  )
 
 # glew need X11 , android doesn't have
 #include_directories(src/main/cpp/glew/include)
 #aux_source_directory(src/main/cpp/glew/src src_glew)
 
 aux_source_directory(src/main/cpp src_all)
+#aux_source_directory(src/main/cpp/texture1 src_all)
 add_library(studyGlfw
     SHARED
     ${src_all}
+    ${ALFONS_SRC}
 )
 set_target_properties(studyGlfw PROPERTIES LINKER_LANGUAGE CXX)
 

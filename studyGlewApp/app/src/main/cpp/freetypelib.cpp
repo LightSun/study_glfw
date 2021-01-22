@@ -18,7 +18,7 @@ FT_Face* FreeTypeLib::loadFace(const char* fontName, int ptSize, int deviceHDPI,
     assert(error == 0 && "Cannot open font file");
 
     force_ucs2_charmap(*face);
-    FT_Set_Char_Size(*face, 0, ptSize, deviceHDPI, deviceVDPI);
+    FT_Set_Char_Size(*face, 0, ptSize << 6, deviceHDPI, deviceVDPI);
 // For Some Twisted Reason, FreeType Measures Font Size
     // In Terms Of 1/64ths Of Pixels.  Thus, To Make A Font
     // h Pixels High, We Need To Request A Size Of h*64.
