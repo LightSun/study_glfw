@@ -19,12 +19,12 @@ namespace alfons {
         float y4;
     };
 
-    struct Rect {
+    typedef struct {
         float x1;
         float y1;
         float x2;
         float y2;
-    };
+    } Rect;
 
     class MeshCallback {
     public:

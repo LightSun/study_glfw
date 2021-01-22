@@ -10,14 +10,14 @@
 
 #pragma once
 
+#include <vector>
+#include <memory>
+
 #include "glyph.h"
 #include "font.h"
 
 #include <glm/vec2.hpp>
 #include <glm/vec4.hpp>
-
-#include <vector>
-#include <memory>
 
 namespace alfons {
 class Font;

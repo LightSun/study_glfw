@@ -10,12 +10,12 @@
 
 #pragma once
 
-#include "fontFace.h"
-
 #include <set>
 #include <map>
 #include <memory>
 #include <vector>
+
+#include "fontFace.h"
 
 namespace alfons {
 

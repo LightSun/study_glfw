@@ -10,14 +10,14 @@
 
 #pragma once
 
+#include <vector>
+#include <array>
+
 #include "alfons.h"
 
 #include <glm/vec2.hpp>
 #include <glm/vec3.hpp>
 #include <glm/mat4x4.hpp>
-
-#include <vector>
-#include <array>
 
 namespace alfons {
 
@@ -35,6 +35,7 @@ public:
     };
 
     QuadMatrix();
+    ~QuadMatrix();
 
     void load(const glm::mat4& matrix);
 

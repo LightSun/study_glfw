@@ -9,7 +9,8 @@
 
 namespace alfons {
 
-struct GlyphKey {
+class GlyphKey {
+public:
     uint32_t font;
     uint32_t codepoint;
 
@@ -35,6 +36,7 @@ struct hash<alfons::GlyphKey> {
 namespace alfons {
 
 class Atlas {
+public:
     struct Node {
         int x, y, width;
     };
@@ -69,7 +71,6 @@ class LineLayout;
 class Font;
 
 class GlyphAtlas {
-
 public:
     GlyphAtlas(TextureCallback& _textureCb, uint16_t _textureSize = 512, int _glyphPadding = 1)
         : m_textureSize(_textureSize),

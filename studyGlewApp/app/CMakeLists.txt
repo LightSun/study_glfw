@@ -21,13 +21,15 @@ set_target_properties(bx PROPERTIES IMPORTED_LOCATION ${LIB_DIR}/libbxDebug.a)
 
 #halfbuzz + freetype + icu
 set(HARFBUZZ_BUILD_ICU ON CACHE BOOL "Enable building of ICU")
-set(HARFBUZZ_BUILD_UCDN OFF CACHE BOOL "Enable building of UCDN")
+set(HARFBUZZ_BUILD_UCDN ON CACHE BOOL "Enable building of UCDN")
 
 set(DIR_HALFBUZZ_FREETYPE src/main/cpp/harfbuzz-icu-freetype)
 include_directories(${DIR_HALFBUZZ_FREETYPE}/freetype/include)
 include_directories(${DIR_HALFBUZZ_FREETYPE}/harfbuzz/src)
 include_directories(${DIR_HALFBUZZ_FREETYPE}/harfbuzz-generated)
 include_directories(${DIR_HALFBUZZ_FREETYPE}/icu/common)
+
+add_subdirectory(${DIR_HALFBUZZ_FREETYPE} harfbuzz_out)
 
 #glm and alfons
 include_directories(src/main/cpp)
@@ -42,7 +44,7 @@ set(ALFONS_SRC
   ${ALFONS_BASE}/alfons/fontFace.cpp
   ${ALFONS_BASE}/alfons/langHelper.cpp
   ${ALFONS_BASE}/alfons/font.cpp
-  ${ALFONS_BASE}/alfons/textBatch.cpp
+  ${ALFONS_BASE}/alfons/textBatcher.cpp
   ${ALFONS_BASE}/alfons/atlas.cpp
   ${ALFONS_BASE}/alfons/textShaper.cpp
   ${ALFONS_BASE}/alfons/quadMatrix.cpp
@@ -61,11 +63,16 @@ set(ALFONS_SRC
 #aux_source_directory(src/main/cpp/glew/src src_glew)
 
 aux_source_directory(src/main/cpp src_all)
-#aux_source_directory(src/main/cpp/texture1 src_all)
+set(RENDER_SRC
+ src/main/cpp/render/basic.cpp
+ src/main/cpp/render/lineWrap.cpp
+ src/main/cpp/render/renderer.cpp
+)
 add_library(studyGlfw
     SHARED
     ${src_all}
     ${ALFONS_SRC}
+    ${RENDER_SRC}
 )
 set_target_properties(studyGlfw PROPERTIES LINKER_LANGUAGE CXX)
 

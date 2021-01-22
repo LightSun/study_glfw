@@ -13,7 +13,7 @@ android {
 
         externalNativeBuild {
             cmake {
-                cppFlags "-std=c++14 -fno-exceptions -O0"
+                cppFlags "-std=c++14 -O0 -DPLATFORM_ANDROID -DGL_ES"
             }
         }
         ndk {

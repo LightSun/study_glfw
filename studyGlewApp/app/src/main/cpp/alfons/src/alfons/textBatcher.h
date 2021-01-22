@@ -10,19 +10,19 @@
 
 #pragma once
 
-#include "lineLayout.h"
-#include "quadMatrix.h"
-
-#include "path/lineSampler.h"
-
 #include <set>
 #include <map>
 #include <memory>
 #include <limits>
 
+#include "lineLayout.h"
+#include "quadMatrix.h"
+
+#include "path/lineSampler.h"
+
 namespace alfons {
 
-struct MeshCallback;
+    class MeshCallback;
 struct AtlasGlyph;
 class GlyphAtlas;
 
@@ -52,10 +52,11 @@ struct LineMetrics {
 
 extern LineMetrics NO_METRICS;
 
-class TextBatch {
+class TextBatcher {
 public:
-
-    TextBatch(GlyphAtlas& _atlas, MeshCallback& _mesh) ;
+    //TextBatch() = default;
+    TextBatcher(GlyphAtlas& _atlas, MeshCallback& _mesh) ;
+    ~TextBatcher();
 
     void setClip(const Rect& clipRect);
     void setClip(float x1, float y1, float x2, float y2);
@@ -93,7 +94,7 @@ public:
     float draw(const LineLayout& line, const LineSampler& path,
                float offsetX = 0, float offsetY = 0);
 
-    QuadMatrix& matrix() { return m_matrix; }
+    QuadMatrix& matrix() { return *m_matrix; }
 
 protected:
     GlyphAtlas& m_atlas;
@@ -102,7 +103,7 @@ protected:
     bool m_hasClip = false;
     Rect m_clip;
 
-    QuadMatrix m_matrix;
+    QuadMatrix* m_matrix;
 
     inline bool clip(Rect& rect) const;
     inline bool clip(Quad& quad) const;

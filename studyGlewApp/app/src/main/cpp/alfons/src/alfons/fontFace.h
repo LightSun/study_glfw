@@ -10,6 +10,10 @@
 
 #pragma once
 
+#include <vector>
+#include <memory>
+#include <tuple>
+
 #include "freetypeHelper.h"
 #include "glyph.h"
 #include "inputSource.h"
@@ -17,10 +21,6 @@
 #include <glm/vec2.hpp>
 
 #include "hb.h"
-
-#include <vector>
-#include <memory>
-#include <tuple>
 
 namespace alfons {
 
