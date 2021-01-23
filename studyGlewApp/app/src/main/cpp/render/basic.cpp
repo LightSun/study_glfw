@@ -10,6 +10,8 @@
 #include "logger.h"
 #include "demoRenderer.h"
 
+#include "JNIRender.h"
+
 #if 0
 #include "nanovg.h"
 #define NANOVG_GL2_IMPLEMENTATION
@@ -36,16 +38,37 @@ TextShaper shaper;
 std::shared_ptr<Font> font;
 std::vector<LineLayout> l;
 
-void onSetup(int w, int h) {
+static void addFace(const char *fontDir, const char* str){
+    auto ch = merge(fontDir, str);
+    std::string cppStr(ch);
+    font->addFace(fontMan.addFontFace(InputSource(cppStr), TEXT_SIZE));
+    free(ch);
+}
+
+static void addFont(const char *fontDir, const char* str){
+    auto ch = merge(fontDir, str);
+    std::string cppStr(ch);
+    font = fontMan.addFont("default", Font::Properties(TEXT_SIZE), InputSource(cppStr));
+    free(ch);
+}
+
+extern "C" void onSetup(const char *fontDir) {
 
     renderer.init();
 
-    font = fontMan.addFont("default", Font::Properties(TEXT_SIZE), InputSource((std::string)DEFAULT));
+   /* font = fontMan.addFont("default", Font::Properties(TEXT_SIZE), InputSource((std::string)DEFAULT));
     font->addFace(fontMan.addFontFace(InputSource((std::string)FONT_AR), TEXT_SIZE));
     font->addFace(fontMan.addFontFace(InputSource((std::string)FONT_HE), TEXT_SIZE));
     font->addFace(fontMan.addFontFace(InputSource((std::string)FONT_HI), TEXT_SIZE));
     font->addFace(fontMan.addFontFace(InputSource((std::string)FONT_JA), TEXT_SIZE));
-    font->addFace(fontMan.addFontFace(InputSource((std::string)FALLBACK), TEXT_SIZE));
+    font->addFace(fontMan.addFontFace(InputSource((std::string)FALLBACK), TEXT_SIZE));*/
+    addFont(fontDir, DEFAULT);
+    addFace(fontDir, FONT_AR);
+    addFace(fontDir, FONT_HE);
+    addFace(fontDir, FONT_HI);
+    addFace(fontDir, FONT_JA);
+    addFace(fontDir, FALLBACK);
+
 
     l.push_back(shaper.shape(font, "Eß hatte aber alle Welt einerlei Zünge und Sprache."));
     l.push_back(shaper.shape(font, "وَكَانَتِ الارْضُ كُلُّهَا لِسَانا وَاحِدا وَلُغَةً وَاحِدًَ.")); // ar
@@ -71,7 +94,7 @@ void onSetup(int w, int h) {
 
 }
 
-void onDraw(/*GLFWwindow *window, */int width, int height) {
+extern "C" void onDraw(/*GLFWwindow *window, */int width, int height) {
     #ifdef NANO_VG
     nvgBeginFrame(vg, width, height, 1);
     nvgStrokeColor(vg, nvgRGBA(255,255,255,128));

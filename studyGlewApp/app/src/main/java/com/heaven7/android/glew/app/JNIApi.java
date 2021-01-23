@@ -2,25 +2,45 @@ package com.heaven7.android.glew.app;
 
 public final class JNIApi {
 
+    private long mPtr;
+
     static {
         System.loadLibrary("studyGlfw");
     }
 
+    public JNIApi(){
+        mPtr = nCreate();
+    }
+
+    @Override
+    protected void finalize() throws Throwable {
+        destroy();
+        super.finalize();
+    }
+
+    public long getNativePtr(){
+        return mPtr;
+    }
+
     public void init(String fontDir){
-       nInit(fontDir, 0, 0);
+       nInit(getNativePtr(), fontDir);
     }
 
     public void resize(int width, int height){
-        nResize(width, height);
+        nResize(getNativePtr(), width, height);
     }
     public void draw(){
-        nDraw();
+        nDraw(getNativePtr());
     }
     public void destroy(){
-        nDestroy();
+        if(mPtr != 0){
+            nDestroy(mPtr);
+            mPtr = 0;
+        }
     }
-    private native void nInit(String fontDir, int width, int height);
-    private native void nResize(int width, int height);
-    private native void nDraw();
-    private native void nDestroy();
+    private static native long nCreate();
+    private static native void nInit(long ptr, String fontDir);
+    private static native void nResize(long ptr, int width, int height);
+    private static native void nDraw(long ptr);
+    private static native void nDestroy(long mPtr);
 }
