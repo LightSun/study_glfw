@@ -26,7 +26,9 @@ namespace alfons {
 struct TextLine;
 struct TextRun;
 class TextItemizer;
-
+/**
+ * used to layout text
+ */
 class TextShaper {
 public:
     TextShaper();

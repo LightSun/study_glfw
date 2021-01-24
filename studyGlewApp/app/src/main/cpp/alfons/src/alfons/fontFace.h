@@ -43,22 +43,6 @@ public:
               scale(scale) {}
     };
 
-    struct Key {
-        std::string uri;
-        int faceIndex;
-        float baseSize;
-
-        Key(const Descriptor& descriptor, float baseSize)
-            : uri(descriptor.source.uri()),
-              faceIndex(descriptor.faceIndex),
-              baseSize(baseSize * descriptor.scale) {}
-
-        bool operator<(const Key& rhs) const {
-            return tie(uri, faceIndex, baseSize) <
-                   tie(rhs.uri, rhs.faceIndex, rhs.baseSize);
-        }
-    };
-
     struct Metrics {
         float height = 0;
         float ascent = 0;

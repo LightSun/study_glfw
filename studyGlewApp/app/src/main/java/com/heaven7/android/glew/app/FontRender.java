@@ -9,8 +9,6 @@ public class FontRender implements GLSurfaceView.Renderer {
 
     private final JNIApi api = new JNIApi();
     private String fontDir;
-    private int width;
-    private int height;
 
     public void setFontDir(String fontDir) {
         this.fontDir = fontDir;
@@ -25,8 +23,6 @@ public class FontRender implements GLSurfaceView.Renderer {
     @Override
     public void onSurfaceChanged(GL10 gl, int width, int height) {
         System.out.println("onSurfaceChanged");
-        this.width = width;
-        this.height = height;
         api.resize(width, height);
     }
 

@@ -5,7 +5,7 @@
 #include <cstring>
 #include <cstdlib>
 
-inline char * merge(const char *s1, const char *s2) {
+char * merge(const char *s1, const char *s2) {
     char *result = static_cast<char *>(malloc(strlen(s1) + strlen(s2) + 1));//+1 for the zero-terminator
     //in real code you would check for errors in malloc here
     if (result == NULL)

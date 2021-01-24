@@ -42,6 +42,7 @@ struct QuadBatch {
     bool empty() const { return vertices.empty(); }
 
     void add(const Rect& _rect, const Glyph& _glyph, uint32_t _state) {
+        //shader 中除以4. 所以这里面要乘以4
         short x1 = _rect.x1 * 4.0f;
         short y1 = _rect.y1 * 4.0f;
         short x2 = _rect.x2 * 4.0f;

@@ -7,6 +7,9 @@
 
 #include "JNIRender.h"
 
+/**
+ * because harfbuzz-example is demo on pc. but not work direct on android. this demo not render ok on gles.
+ */
 class SimpleFontRender: public JNIRender{
 
 public:

@@ -62,7 +62,7 @@ public class MainActivity extends AppCompatActivity {
         GLSurfaceView view = new GLSurfaceView(this);
         view.setEGLContextClientVersion(3);//for GLSurfaceView often need <uses-feature android:glEsVersion="0x00020000" />
         view.setRenderer(mRender);
-        mRender.setFontDir(Environment.getExternalStorageDirectory() + "/temp/fonts");
+        mRender.setFontDir(Environment.getExternalStorageDirectory() + "/temp/fonts/");
         setContentView(view);
     }
 

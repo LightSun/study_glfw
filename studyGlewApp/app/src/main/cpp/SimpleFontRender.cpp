@@ -130,11 +130,11 @@ void SimpleFontRender::init(const char *fontDir) {
 
     clock_t begin, end;
 
-    MERGE_STR2(fontDir, "/DejaVuSerif.ttf", latinShaper.set(ch, &_xlib));
-    MERGE_STR2(fontDir, "/amiri-regular.ttf", arabicShaper.set(ch, &_xlib));
-    MERGE_STR2(fontDir, "/DejaVuSerif.ttf", russianShaper.set(ch, &_xlib));
-    MERGE_STR2(fontDir, "/fireflysung.ttf", hanShaper.set(ch, &_xlib));
-    MERGE_STR2(fontDir, "/Sanskrit2003.ttf", hindiShaper.set(ch, &_xlib));
+    MERGE_STR2(fontDir, "DejaVuSerif.ttf", latinShaper.set(ch, &_xlib));
+    MERGE_STR2(fontDir, "amiri-regular.ttf", arabicShaper.set(ch, &_xlib));
+    MERGE_STR2(fontDir, "DejaVuSerif.ttf", russianShaper.set(ch, &_xlib));
+    MERGE_STR2(fontDir, "fireflysung.ttf", hanShaper.set(ch, &_xlib));
+    MERGE_STR2(fontDir, "Sanskrit2003.ttf", hindiShaper.set(ch, &_xlib));
 
     latinShaper.init();
     arabicShaper.init();

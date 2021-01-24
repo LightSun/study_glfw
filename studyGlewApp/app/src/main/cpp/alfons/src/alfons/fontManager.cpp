@@ -27,7 +27,9 @@ std::shared_ptr<Font> FontManager::addFont(std::string _name, Font::Properties _
         return it->second;
     }
 
+    //c++ emplace/emplace_back 只会调用构造一次。push_back 会先构造，再调用拷贝构造各一次.
     auto font = std::make_shared<Font>(_properties);
+    //从实现上讲，std::move基本等同于一个类型转换：static_cast<T&&>(lvalue);
     m_fonts.emplace(std::move(key), font);
 
     if (_source.isValid()) {

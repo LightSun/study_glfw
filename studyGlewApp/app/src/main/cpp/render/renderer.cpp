@@ -22,7 +22,6 @@ Renderer::~Renderer() {}
 
 void Renderer::drawGlyph(const Quad& _quad, const AtlasGlyph& _glyph) {
     batches[_glyph.atlas].add(_quad, *_glyph.glyph, m_state);
-
 }
 
 void Renderer::drawGlyph(const Rect& _rect, const AtlasGlyph& _glyph) {
@@ -111,7 +110,7 @@ static void glCheckError(const char* str) {
         return;
     }
 }
-
+//set index data
 void Renderer::getIndices(uint32_t capacity) {
 
     if (capacity > idxCapacity) {
@@ -199,11 +198,12 @@ void Renderer::drawVertices(QuadBatch& quads) {
     for (uint32_t idx = 0; idx < numIndices; idx += MAX_INDICES) {
         // * (24 shorts per quad) / 6 indices == 4)
         uint32_t offset = idx * 4;
-
+        //x, y
         glVertexAttribPointer(attributePos, 2,
-                              GL_SHORT, GL_FALSE, 12,
+                              GL_SHORT, GL_FALSE, 12, //4*sizeof(short) + uint32
                               pointer + offset);
 
+        //u, v
         glVertexAttribPointer(attributeTex, 4, GL_SHORT,
                               GL_FALSE, 12, pointer + 2 + offset);
 
