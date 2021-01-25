@@ -501,7 +501,7 @@ bool WordWrap::wrapLine(LineLayout& layout, float width, float maxWidth,
             if (wordWidth > width) {
                 width = wordWidth;
                 if (width > maxWidth) {
-                    log("MAX %f", width);
+                    LOGD("MAX %f", width);
                     return false;
                 }
             }
@@ -547,7 +547,7 @@ bool WordWrap::wrapLine(LineLayout& layout, float width, float maxWidth,
     auto rows = breakLines();
 
     if (rows.empty()) {
-        log("EMPTY %d", width);
+        LOGD("EMPTY %d", width);
 
         return false;
     }

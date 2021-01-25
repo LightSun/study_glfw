@@ -36,16 +36,16 @@ GlyphAtlas atlas(renderer, 256, 2);
 TextBatcher batch(atlas, renderer);
 TextShaper shaper;
 std::shared_ptr<Font> font;
-std::vector<LineLayout> l;
+std::vector<LineLayout> l;//all layout
 
-static void addFace(const char *fontDir, const char* str){
+static void addFace(const char *fontDir, const char *str) {
     auto ch = merge(fontDir, str);
     std::string cppStr(ch);
     font->addFace(fontMan.addFontFace(InputSource(cppStr), TEXT_SIZE));
     free(ch);
 }
 
-static void addFont(const char *fontDir, const char* str){
+static void addFont(const char *fontDir, const char *str) {
     auto ch = merge(fontDir, str);
     std::string cppStr(ch);
     font = fontMan.addFont("default", Font::Properties(TEXT_SIZE), InputSource(cppStr));
@@ -56,12 +56,12 @@ extern "C" void onSetup(const char *fontDir) {
 
     renderer.init();
 
-   /* font = fontMan.addFont("default", Font::Properties(TEXT_SIZE), InputSource((std::string)DEFAULT));
-    font->addFace(fontMan.addFontFace(InputSource((std::string)FONT_AR), TEXT_SIZE));
-    font->addFace(fontMan.addFontFace(InputSource((std::string)FONT_HE), TEXT_SIZE));
-    font->addFace(fontMan.addFontFace(InputSource((std::string)FONT_HI), TEXT_SIZE));
-    font->addFace(fontMan.addFontFace(InputSource((std::string)FONT_JA), TEXT_SIZE));
-    font->addFace(fontMan.addFontFace(InputSource((std::string)FALLBACK), TEXT_SIZE));*/
+    /* font = fontMan.addFont("default", Font::Properties(TEXT_SIZE), InputSource((std::string)DEFAULT));
+     font->addFace(fontMan.addFontFace(InputSource((std::string)FONT_AR), TEXT_SIZE));
+     font->addFace(fontMan.addFontFace(InputSource((std::string)FONT_HE), TEXT_SIZE));
+     font->addFace(fontMan.addFontFace(InputSource((std::string)FONT_HI), TEXT_SIZE));
+     font->addFace(fontMan.addFontFace(InputSource((std::string)FONT_JA), TEXT_SIZE));
+     font->addFace(fontMan.addFontFace(InputSource((std::string)FALLBACK), TEXT_SIZE));*/
     addFont(fontDir, DEFAULT);
     addFace(fontDir, FONT_AR);
     addFace(fontDir, FONT_HE);
@@ -71,17 +71,21 @@ extern "C" void onSetup(const char *fontDir) {
 
 
     l.push_back(shaper.shape(font, "Eß hatte aber alle Welt einerlei Zünge und Sprache."));
-    l.push_back(shaper.shape(font, "وَكَانَتِ الارْضُ كُلُّهَا لِسَانا وَاحِدا وَلُغَةً وَاحِدًَ.")); // ar
+    l.push_back(shaper.shape(font,
+                             "وَكَانَتِ الارْضُ كُلُّهَا لِسَانا وَاحِدا وَلُغَةً وَاحِدًَ.")); // ar
     l.push_back(shaper.shape(font, "ΚΑΙ ολόκληρη η γη ήταν μιας γλώσσας, και μιας φωνής.")); // el
     l.push_back(shaper.shape(font, "And the whole earth was of one language, and of one speech."));
-    l.push_back(shaper.shape(font, "ERA entonces toda la tierra de una lengua y unas mismas palabras."));
+    l.push_back(shaper.shape(font,
+                             "ERA entonces toda la tierra de una lengua y unas mismas palabras."));
     l.push_back(shaper.shape(font, "Toute la terre avait une seule langue et les mêmes mots."));
-    l.push_back(shaper.shape(font, "nוַיְהִי כָל-הָאָרֶץ, שָׂפָה אֶחָת, וּדְבָרִים, אֲחָדִים.")); //he
+    l.push_back(
+            shaper.shape(font, "nוַיְהִי כָל-הָאָרֶץ, שָׂפָה אֶחָת, וּדְבָרִים, אֲחָדִים.")); //he
     l.push_back(shaper.shape(font, "सारी पृथ्वी पर एक ही भाषा, और एक ही बोली थी।")); // hi
     l.push_back(shaper.shape(font, "全地は同じ発音、同じ言葉であった。")); //ja
     l.push_back(shaper.shape(font, "온 땅의 구음이 하나이요 언어가 하나이었더라")); //ko
     l.push_back(shaper.shape(font, "На всей земле был один язык и одно наречие."));
-    l.push_back(shaper.shape(font, "那時、天下人的口音言語、都是一樣。")); //zh-tw
+    l.push_back(shaper.shape(font,
+                             "那時、天下人的口音言語、都是一樣。的肌肤的肌肤mdfjdjfdfjdfjdfjdfdjskfafk， 好烦好烦。dsfsdjsfjsfj， 对符合当时发生的符合。")); //zh-tw
 
     // BIDI - RTL paragraph
     // l.push_back(shaper.shape(font, "ممم 26 يي\r\nيي 12\r\n34 ووووو end"));
@@ -93,21 +97,23 @@ extern "C" void onSetup(const char *fontDir) {
 #endif
 
 }
-
+/**
+ * 文字处理一般包括： 测量，绘制在指定宽度内.
+ */
 extern "C" void onDraw(/*GLFWwindow *window, */int width, int height) {
-    #ifdef NANO_VG
+#ifdef NANO_VG
     nvgBeginFrame(vg, width, height, 1);
     nvgStrokeColor(vg, nvgRGBA(255,255,255,128));
     nvgFillColor(vg, nvgRGBA(64,64,64,128));
-    #endif
+#endif
 
-    batch.setClip(0,0, width, height);
+    batch.setClip(0, 0, width, height);
 
     glm::vec2 offset(20, 20);
 
-    for (auto& line : l) {
+    for (auto &line : l) {
 
-        #ifdef NANO_VG
+#ifdef NANO_VG
         float asc = line.ascent();
         float dsc = line.descent();
         float adv = line.advance();
@@ -122,27 +128,29 @@ extern "C" void onDraw(/*GLFWwindow *window, */int width, int height) {
         nvgMoveTo(vg, offset.x, offset.y);
         nvgLineTo(vg, offset.x + line.advance(), offset.y);
         nvgStroke(vg);
-        #endif
+#endif
 
+        //40: 左右各20
         offset.y = batch.draw(line, offset, std::max(width - 40, 10)).y;
         offset.y += 10;
     }
 
-    #ifdef NANO_VG
+#ifdef NANO_VG
     nvgEndFrame(vg);
-    #endif
+#endif
 
     renderer.beginFrame(width, height);
 
     float inner = 0.1;
     float outer = 0.3;
-    float outerCenter = 0.5 - inner;
+    float outerCenter = 0.5 - inner;//0.4f
 
-    renderer.setColor({1.0,1.0,1.0,1.0});
+    //default is : (1, 1, 1, 1)
+    renderer.setColor({1.0, 0.0, 0.0, 1.0});
     renderer.setWidth(outerCenter - outer, outerCenter + outer);
     renderer.draw();
 
-    renderer.setColor({0.0,0.0,0.0,1.0});
+    renderer.setColor({0.0, 0.0, 0.0, 1.0});
     renderer.setWidth(0.5 - inner, 0.5 + inner);
     renderer.draw();
 

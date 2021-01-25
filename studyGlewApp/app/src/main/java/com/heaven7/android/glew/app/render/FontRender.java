@@ -1,14 +1,25 @@
-package com.heaven7.android.glew.app;
+package com.heaven7.android.glew.app.render;
 
-import android.opengl.GLSurfaceView;
+import android.app.Activity;
+import android.os.Environment;
+
+import com.heaven7.android.glew.app.AssetsUtils;
+import com.heaven7.android.glew.app.IGLRender;
+import com.heaven7.android.glew.app.JNIApi;
+import com.heaven7.java.pc.schedulers.Schedulers;
 
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 
-public class FontRender implements GLSurfaceView.Renderer {
+public class FontRender extends IGLRender {
 
     private final JNIApi api = new JNIApi();
+    private final Activity context;
     private String fontDir;
+
+    public FontRender(Activity context) {
+        this.context = context;
+    }
 
     public void setFontDir(String fontDir) {
         this.fontDir = fontDir;
@@ -29,6 +40,18 @@ public class FontRender implements GLSurfaceView.Renderer {
     @Override
     public void onDrawFrame(GL10 gl) {
         api.draw();
+    }
+
+    @Override
+    public void setUp(Runnable next) {
+        setFontDir(Environment.getExternalStorageDirectory() + "/temp/fonts/");
+        Schedulers.io().newWorker().schedule(new Runnable() {
+            @Override
+            public void run() {
+                AssetsUtils.copyAll(context.getApplicationContext(), "fonts", Environment.getExternalStorageDirectory() + "/temp");
+                context.runOnUiThread(next);
+            }
+        });
     }
 }
 

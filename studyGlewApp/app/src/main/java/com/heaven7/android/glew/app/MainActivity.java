@@ -1,32 +1,25 @@
 package com.heaven7.android.glew.app;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.Manifest;
-import android.opengl.GLSurfaceView;
 import android.os.Bundle;
-import android.os.Environment;
-import android.view.View;
 
+import com.heaven7.android.glew.app.render.FontRender;
+import com.heaven7.android.glew.app.render.LightDemoRender;
+import com.heaven7.core.util.BundleHelper;
 import com.heaven7.core.util.PermissionHelper;
-import com.heaven7.java.pc.schedulers.Schedulers;
 
-public class MainActivity extends AppCompatActivity {
+import java.util.List;
 
-    private PermissionHelper mHelper = new PermissionHelper(this);
-    private FontRender mRender = new FontRender();
+public class MainActivity extends AbsMainActivity {
+
+    private final PermissionHelper mHelper = new PermissionHelper(this);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        requestPermission();
     }
 
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        mHelper.onRequestPermissionsResult(requestCode, permissions, grantResults);
-    }
     private void requestPermission(){
         mHelper.startRequestPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE,
                 1, new PermissionHelper.ICallback() {
@@ -34,7 +27,7 @@ public class MainActivity extends AppCompatActivity {
                     public void onRequestPermissionResult(String s, int i, boolean b) {
                         System.out.println("onRequestPermissionResult: " + b);
                         if(b){
-                            copyFont();
+
                         }
                     }
                     @Override
@@ -44,29 +37,16 @@ public class MainActivity extends AppCompatActivity {
                 });
     }
 
-    private void copyFont() {
-        Schedulers.io().newWorker().schedule(new Runnable() {
-            @Override
-            public void run() {
-                AssetsUtils.copyAll(getApplicationContext(), "fonts", Environment.getExternalStorageDirectory() + "/temp");
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        setViewImpl();
-                    }
-                });
-            }
-        });
-    }
-    private void setViewImpl(){
-        GLSurfaceView view = new GLSurfaceView(this);
-        view.setEGLContextClientVersion(3);//for GLSurfaceView often need <uses-feature android:glEsVersion="0x00020000" />
-        view.setRenderer(mRender);
-        mRender.setFontDir(Environment.getExternalStorageDirectory() + "/temp/fonts/");
-        setContentView(view);
+    public void addRenderDemo(Class<? extends IGLRender> render, String desc){
+        ActivityInfo info = new ActivityInfo(RenderActivity.class, desc);
+        info.setArgs(new BundleHelper().putString(RenderActivity.KEY_RENDER_CLASS,
+                render.getName()).getBundle());
+        mInfos.add(info);
     }
 
-    public void onClickStart(View view) {
-        requestPermission();
+    @Override
+    protected void addDemos(List<ActivityInfo> list) {
+        addRenderDemo(FontRender.class, "Font render demo");
+        addRenderDemo(LightDemoRender.class, "light render demo");
     }
 }

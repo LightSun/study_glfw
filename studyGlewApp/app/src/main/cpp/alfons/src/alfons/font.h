@@ -49,9 +49,6 @@ public:
 
     bool addFace(std::shared_ptr<FontFace> face, hb_language_t lang = HB_LANGUAGE_INVALID);
 
-    static Style styleStringToEnum(const std::string& style);
-    static std::string styleEnumToString(Style style);
-
     const Faces& getFontSet(hb_language_t lang) const;
 
     const FontFace& face(FaceID _faceId) const {
@@ -71,6 +68,9 @@ public:
     void addFaces(const Font& _other);
 
     const std::map<hb_language_t, Faces>& fontFaceMap() { return m_fontFaceMap; }
+
+    static Style styleStringToEnum(const std::string& style);
+    static std::string styleEnumToString(Style style);
 
 protected:
     Properties m_properties;

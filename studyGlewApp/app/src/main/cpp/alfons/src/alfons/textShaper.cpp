@@ -200,6 +200,7 @@ void TextItemizer::itemizeDirection(TextLine& _line) {
             bidi = nullptr;
         }
 
+        LOGD("text length = %d", length );
         int size = length < 256 ? 256 : length;
 
         // FIXME maxRuns too large?

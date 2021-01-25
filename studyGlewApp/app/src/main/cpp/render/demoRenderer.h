@@ -52,8 +52,11 @@ uniform float u_max;
 varying vec2 v_uv;
 void main(void) {
     vec4 texColor = texture2D(u_tex, v_uv);
+   // gl_FragColor = texColor * u_color; //display error
+    //gl_FragColor = u_color; //display error
     gl_FragColor = smoothstep(u_min, u_max, texColor.a) * u_color;
     //gl_FragColor += 0.1;
+    //smoothstep means:::  u_min > texColor.a ? 0 : ((u_max < 1 ? 1 : (0~1)))
 }
 )END";
 
@@ -127,6 +130,9 @@ public:
 
         uMin= glGetUniformLocation(defaultShaderProgram, "u_min");
         uMax= glGetUniformLocation(defaultShaderProgram, "u_max");
+
+        //LOGD("posAttrib = %d, texCoordAttrib= %d", posAttrib, texCoordAttrib);
+        setAttributeIds(posAttrib, texCoordAttrib);
     }
 
     void setColor(glm::vec4 color) {

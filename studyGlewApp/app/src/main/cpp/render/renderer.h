@@ -5,6 +5,7 @@
 
 #include <cstdint>
 #include <vector>
+#include <alfons/src/logger/logger.h>
 
 #define USE_SDF
 
@@ -22,7 +23,9 @@ struct Vertex {
     Vertex(short x, short y, short u, short v, uint32_t state)
         : x(x), y(y), u(u), v(v), state(state) {}
 };
-
+/**
+ * 四边形批处理
+ */
 struct QuadBatch {
 
     std::vector<unsigned char> texData;
@@ -42,7 +45,8 @@ struct QuadBatch {
     bool empty() const { return vertices.empty(); }
 
     void add(const Rect& _rect, const Glyph& _glyph, uint32_t _state) {
-        //shader 中除以4. 所以这里面要乘以4
+        //LOGD("add Rect: x1, y1, x2, y2 = (%d, %d, %d, %d)", _rect.x1, _rect.y1, _rect.x2, _rect.y2);
+        //shader 中除以4. 所以这里面要乘以4. 这里可以控制顶点坐标
         short x1 = _rect.x1 * 4.0f;
         short y1 = _rect.y1 * 4.0f;
         short x2 = _rect.x2 * 4.0f;
@@ -55,6 +59,7 @@ struct QuadBatch {
     }
 
     void add(const Quad& _quad, const Glyph& _glyph, uint32_t _state) {
+       // LOGD("add Quad: x1, y1, x2, y2 = (%d, %d, %d, %d)", _quad.x1, _quad.y1, _quad.x2, _quad.y2);
         vertices.emplace_back(_quad.x1 * 4.0f, _quad.y1 * 4.0f, _glyph.u1, _glyph.v1, _state);
         vertices.emplace_back(_quad.x2 * 4.0f, _quad.y2 * 4.0f, _glyph.u1, _glyph.v2, _state);
         vertices.emplace_back(_quad.x3 * 4.0f, _quad.y3 * 4.0f, _glyph.u2, _glyph.v2, _state);
@@ -102,10 +107,11 @@ private:
     int attributePos = 0;
     int attributeTex = 1;
 
+    //index capacity
     uint idxCapacity = 0;
 
     uint vbo[2];
-    uint32_t m_state = 0;
+    uint32_t m_state = 0;//todo what this mean?
 
     std::vector<uint> textures;
 

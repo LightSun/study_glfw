@@ -40,7 +40,7 @@ void Renderer::addTexture(AtlasID atlas, uint16_t textureWidth, uint16_t texture
 void Renderer::addGlyph(AtlasID atlas, uint16_t gx, uint16_t gy, uint16_t gw, uint16_t gh,
                         const unsigned char* src, uint16_t pad) {
 
-    // LOGD("addGlyph %d", atlas);
+    // LOGD("addGlyph = %d, xy = (%d, %d)", atlas, gx, gy);
 
     auto &texData = batches[atlas].texData;
     auto &dirtyRect = batches[atlas].dirtyRect;
@@ -134,6 +134,7 @@ void Renderer::getIndices(uint32_t capacity) {
 
         uint16_t* pointer = reinterpret_cast<uint16_t*>(indices.data());
 
+        //sizeof(short) * 6(count of index) *capacity
         glBufferData(GL_ELEMENT_ARRAY_BUFFER, 2 * 6 * capacity,
                      pointer, GL_STATIC_DRAW);
     } else {
@@ -141,6 +142,7 @@ void Renderer::getIndices(uint32_t capacity) {
     }
 }
 
+//texId = 0 . means auto gen texture id
 static uint32_t loadTexture(QuadBatch& batch, uint32_t texId) {
 
     bool useMipmap = false;
@@ -203,7 +205,7 @@ void Renderer::drawVertices(QuadBatch& quads) {
                               GL_SHORT, GL_FALSE, 12, //4*sizeof(short) + uint32
                               pointer + offset);
 
-        //u, v
+        //u, v.  size 2 or 4 both ok.
         glVertexAttribPointer(attributeTex, 4, GL_SHORT,
                               GL_FALSE, 12, pointer + 2 + offset);
 
@@ -211,6 +213,7 @@ void Renderer::drawVertices(QuadBatch& quads) {
         if (curIndices > MAX_INDICES) {
             curIndices = MAX_INDICES;
         }
+        //LOGD("idx = %d, curIndices = %d", idx, curIndices);
 
         glDrawElements(GL_TRIANGLES, curIndices,
                        GL_UNSIGNED_SHORT, 0);
@@ -256,7 +259,7 @@ void Renderer::draw() {
 
         drawVertices(batch);
 
-        // debugQuad(512, id, 0);
+        //debugQuad(512, id, 0);
         id++;
     }
 }

@@ -85,6 +85,7 @@ public:
         return draw(line, {x, y}, metrics);
     }
 
+    //return drawed end x and y
     glm::vec2 draw(const LineLayout& line, glm::vec2 position, float width,
                    LineMetrics& metrics = NO_METRICS);
 

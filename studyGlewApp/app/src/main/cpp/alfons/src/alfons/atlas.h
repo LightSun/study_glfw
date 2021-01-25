@@ -34,7 +34,9 @@ struct hash<alfons::GlyphKey> {
 }
 
 namespace alfons {
-
+/**
+ * 字形
+ */
 class Atlas {
 public:
     struct Node {
@@ -61,7 +63,7 @@ public:
 };
 
 using AtlasID = size_t;
-
+//字体图
 struct AtlasGlyph {
     AtlasID atlas;
     Glyph* glyph;
