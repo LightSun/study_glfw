@@ -85,7 +85,8 @@ public:
         attributeTex = tex;
     }
 
-    void clearQuads() {
+    void end() {
+        //clearQuads
         for (auto &batch : batches) {
             batch.vertices.clear();
         }

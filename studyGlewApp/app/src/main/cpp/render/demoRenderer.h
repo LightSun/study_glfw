@@ -139,7 +139,7 @@ public:
         glUniform4f(uColor, color.r, color.g, color.b, color.a);
     }
 
-    void setWidth(float min, float max) {
+    void setRange(float min, float max) {
         glUniform1f(uMin, min);
         glUniform1f(uMax, max);
     }

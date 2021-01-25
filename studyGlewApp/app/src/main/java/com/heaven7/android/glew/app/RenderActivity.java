@@ -4,17 +4,13 @@ import android.app.Activity;
 import android.opengl.GLSurfaceView;
 import android.os.Bundle;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-
-import com.heaven7.core.util.PermissionHelper;
 
 import java.lang.reflect.Constructor;
 
 public class RenderActivity extends AppCompatActivity {
 
     public static final String KEY_RENDER_CLASS = "render_class";
-    private PermissionHelper mHelper = new PermissionHelper(this);
     private IGLRender mRender;
 
     @Override
@@ -33,11 +29,6 @@ public class RenderActivity extends AppCompatActivity {
         }
 
         mRender.setUp(RenderActivity.this::setViewImpl);
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        mHelper.onRequestPermissionsResult(requestCode, permissions, grantResults);
     }
 
     private void setViewImpl(){

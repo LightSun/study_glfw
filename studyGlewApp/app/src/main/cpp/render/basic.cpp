@@ -98,7 +98,7 @@ extern "C" void onSetup(const char *fontDir) {
 
 }
 /**
- * 文字处理一般包括： 测量，绘制在指定宽度内.
+ * 文字处理一般包括： 测量，绘制在指定宽度内. 颜色，下划线，删除线，等
  */
 extern "C" void onDraw(/*GLFWwindow *window, */int width, int height) {
 #ifdef NANO_VG
@@ -145,16 +145,26 @@ extern "C" void onDraw(/*GLFWwindow *window, */int width, int height) {
     float outer = 0.3;
     float outerCenter = 0.5 - inner;//0.4f
 
-    //default is : (1, 1, 1, 1)
-    renderer.setColor({1.0, 0.0, 0.0, 1.0});
-    renderer.setWidth(outerCenter - outer, outerCenter + outer);
-    renderer.draw();
+    //default is : (1.0, 1.0, 1.0, 1.0)
+  /*  {  //option 1: 红色
+        renderer.setColor({1.0, 0.0, 0.0, 1.0});
+        renderer.setRange(outerCenter - outer, outerCenter + outer);
+        renderer.draw();
+    }
 
-    renderer.setColor({0.0, 0.0, 0.0, 1.0});
-    renderer.setWidth(0.5 - inner, 0.5 + inner);
-    renderer.draw();
+    {  //option 2: 黑色.
+        renderer.setColor({0.0, 0.0, 0.0, 1.0});
+        renderer.setRange(0.5 - inner, 0.5 + inner);
+        renderer.draw();
+    }*/
 
-    renderer.clearQuads();
+    {  //option 3: 红色
+        renderer.setColor({1.0, 0.0, 0.0, 1.0});
+        renderer.setRange(0, 1);
+        renderer.draw();
+    }
+
+    renderer.end();
 
 }
 

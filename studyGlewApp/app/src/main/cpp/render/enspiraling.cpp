@@ -31,7 +31,7 @@ TextBatcher batch(atlas, renderer);
 LineLayout layout;
 TextSpiral spiral;
 LineSampler peanutPath;
-std::shared_ptr<Font> font;
+std::shared_ptr <Font> font;
 
 double prevt = 0;
 
@@ -47,22 +47,22 @@ void onSetup(int w, int h) {
     SplinePath spline;
     float x = 300;
     float y = 300;
-    spline.add(x-100, y-100);
-    spline.add(x, y-25);
-    spline.add(x+100, y-100);
-    spline.add(x+200, y);
-    spline.add(x+100, y+100);
-    spline.add(x, y+25);
-    spline.add(x-100, y+100);
-    spline.add(x-200, y);
+    spline.add(x - 100, y - 100);
+    spline.add(x, y - 25);
+    spline.add(x + 100, y - 100);
+    spline.add(x + 200, y);
+    spline.add(x + 100, y + 100);
+    spline.add(x, y + 25);
+    spline.add(x - 100, y + 100);
+    spline.add(x - 200, y);
     spline.close();
 
     peanutPath.sampleSpline(spline, SplineType::bspline, 10);
 
     renderer.init();
 
-   /* glfwSetTime(0);
-    prevt = glfwGetTime();*/
+    /* glfwSetTime(0);
+     prevt = glfwGetTime();*/
 }
 
 void flushBatch(float scale) {
@@ -72,26 +72,27 @@ void flushBatch(float scale) {
     if (outer > 0.3) { outer = 0.3; }
     float outerCenter = 0.5 - inner;
 
-    renderer.setColor({1.0,1.0,1.0,1.0});
-    renderer.setWidth(outerCenter - outer, outerCenter + outer);
+    renderer.setColor({1.0, 1.0, 1.0, 1.0});
+    renderer.setRange(outerCenter - outer, outerCenter + outer);
     renderer.draw();
 
-    renderer.setColor({0.0,0.0,0.0,1.0});
-    renderer.setWidth(0.5 - inner, 0.5 + inner);
+    renderer.setColor({0.0, 0.0, 0.0, 1.0});
+    renderer.setRange(0.5 - inner, 0.5 + inner);
     renderer.draw();
 
-    renderer.clearQuads();
+    renderer.end();
 
 }
+
 void onDraw(/*GLFWwindow *window,*/ int fbWidth, int fbHeight) {
     double mx, my, t;
     int winWidth, winHeight;
 
-  /*  t = glfwGetTime();
+    /*  t = glfwGetTime();
 
-    glfwGetCursorPos(window, &mx, &my);
+      glfwGetCursorPos(window, &mx, &my);
 
-    glfwGetWindowSize(window, &winWidth, &winHeight);*/
+      glfwGetWindowSize(window, &winWidth, &winHeight);*/
     // Calculate pixel ration for hi-dpi devices.
     // float pxRatio = float(fbWidth) / float(winWidth);
 
@@ -100,14 +101,14 @@ void onDraw(/*GLFWwindow *window,*/ int fbWidth, int fbHeight) {
     float scale = std::max(float(my) / winHeight * 4, 0.5f);
 
     layout.setScale(scale);
-    batch.draw(layout, {50,50}, 400);
+    batch.draw(layout, {50, 50}, 400);
     flushBatch(scale);
 
 
     scale = 1.0;
     layout.setScale(scale);
     double r2 = 300 + sin(t) * 300;
-    spiral.update(winWidth/2, winHeight/2, 200, r2, 2, 0, 0);
+    spiral.update(winWidth / 2, winHeight / 2, 200, r2, 2, 0, 0);
     float adv = 0;
     adv = spiral.drawText(batch, layout, adv, 0);
     adv = spiral.drawText(batch, layout, adv, 0);
@@ -120,7 +121,7 @@ void onDraw(/*GLFWwindow *window,*/ int fbWidth, int fbHeight) {
 
     scale = 2.0;
     layout.setScale(scale);
-    batch.draw(layout, peanutPath, t*40.0, 0);
+    batch.draw(layout, peanutPath, t * 40.0, 0);
     flushBatch(scale);
 }
 
