@@ -56,7 +56,17 @@ set(ALFONS_SRC
   ${ALFONS_BASE}/linebreak/linebreak.c
   ${ALFONS_BASE}/linebreak/linebreakdata.c
   ${ALFONS_BASE}/linebreak/linebreakdef.c
+  ${ALFONS_BASE}/linebreak/unibreakbase.c
+  ${ALFONS_BASE}/linebreak/unibreakdef.c
+  ${ALFONS_BASE}/linebreak/wordbreak.c
+  ${ALFONS_BASE}/linebreak/wordbreakdata.c
   )
+#LIBUNIBREAK_SRC_FILES = \
+#    src/linebreak.c \
+#    src/linebreakdata.c \
+#    src/linebreakdef.c \
+#    src/unibreakdef.c \
+ #   src/wordbreak.c
 
 # glew need X11 , android doesn't have
 #include_directories(src/main/cpp/glew/include)

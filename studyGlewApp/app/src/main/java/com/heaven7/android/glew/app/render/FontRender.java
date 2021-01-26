@@ -1,6 +1,7 @@
 package com.heaven7.android.glew.app.render;
 
 import android.app.Activity;
+import android.opengl.GLSurfaceView;
 import android.os.Environment;
 
 import com.heaven7.android.glew.app.AssetsUtils;
@@ -23,6 +24,11 @@ public class FontRender extends IGLRender {
 
     public void setFontDir(String fontDir) {
         this.fontDir = fontDir;
+    }
+
+    @Override
+    public int getRenderMode() {
+        return GLSurfaceView.RENDERMODE_WHEN_DIRTY;
     }
 
     @Override

@@ -85,7 +85,7 @@ extern "C" void onSetup(const char *fontDir) {
     l.push_back(shaper.shape(font, "온 땅의 구음이 하나이요 언어가 하나이었더라")); //ko
     l.push_back(shaper.shape(font, "На всей земле был один язык и одно наречие."));
 
-    std::string str = "那時、天下人的口音言語、都是一樣。的肌肤的肌肤mdfjdjfdfjdfjdfjdfdjskfafk，dfdf好烦好烦。dsfsdjsfjsfj，adada对符合当时发生的符合。";
+    std::string str = "那時、天下人的口音言語、都是一樣。\"的肌肤的肌肤mdfjdjfdfjdfjdfjdfdjskfafk，dfdf\"好烦好烦。dsfsdjsfjsfj，adada对符合当时发生的符合。";
     l.push_back(shaper.shape(font, str)); //zh-tw
 
     str = "那時、天下人的口音言語、都是一樣。\n的肌肤的肌肤mdfjdjfdfjdfjdfjdfdjskfafk， 好烦好烦。dsfsdjsfjsfj， 对符合当时发生的符合。";

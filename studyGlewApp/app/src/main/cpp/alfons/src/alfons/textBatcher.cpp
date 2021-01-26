@@ -186,7 +186,9 @@ namespace alfons {
         size_t startShape = 0;
 
         for (auto &shape : _line.shapes()) {
-
+            //shape.cluster always 1
+            LOGD("shape.cluster = %d, codePoint = %u, canBreak = %d, mustBreak = %d, isSpace = %d",
+                    shape.cluster, shape.codepoint, shape.canBreak, shape.mustBreak, shape.isSpace);
             if (!shape.cluster) {
                 shapeCount++;
                 lineWidth += _line.advance(shape);
@@ -196,7 +198,7 @@ namespace alfons {
             shapeCount++;
             lineWidth += _line.advance(shape);
 
-            // is break - or must break?
+            // is break - or must break? mustBreak 通常表示句号等标点符号
             if (shape.canBreak || shape.mustBreak) {
                 lastShape = shapeCount;
                 lastWidth = lineWidth;
@@ -208,6 +210,13 @@ namespace alfons {
                     lineWidth -= _line.advance(endShape);
                     lastWidth -= _line.advance(endShape);
                 }
+                //------- start heaven7 ---------
+                else if(!shape.mustBreak && shape.canBreak){
+                    lastShape --;
+                    lineWidth -= _line.advance(shape);
+                    lastWidth -= _line.advance(shape);
+                }
+                //------- end heaven7 ---------
 
                 adv = std::max(adv, drawShapeRange(_line, startShape, lastShape,
                                                    _position, _metrics).x);
@@ -308,6 +317,11 @@ namespace alfons {
                 if (endShape.isSpace) {
                     lineWidth -= _line.advance(endShape);
                     lastWidth -= _line.advance(endShape);
+                } else if(!shape.mustBreak && shape.canBreak){
+                    //如果可以中断
+                    lastShape --;
+                    lineWidth -= _line.advance(shape);
+                    lastWidth -= _line.advance(shape);
                 }
 
                 adv = std::max(adv, drawShapeRange(_line, startShape, lastShape,
