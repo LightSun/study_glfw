@@ -25,6 +25,7 @@ namespace alfons {
 
 struct GlyphData {
     int x0, y0, x1, y1;
+    int horBaseline; //baseline = top + bearingY
 
     GlyphData()
         : x0(0), y0(0), x1(0), y1(0),
@@ -84,14 +85,19 @@ struct GlyphData {
         x1 = x0 + ftSlot->bitmap.width;
         y0 = -ftSlot->bitmap_top;
         y1 = y0 + ftSlot->bitmap.rows;
+        horBaseline = y0 + ftSlot->metrics.horiBearingY;
 
         return true;
+    }
+    int getBaselineMarginTop() const{
+        return horBaseline - y0;
     }
 
     FT_Glyph ftGlyph;
 
     // Slot belongs to most recently used ftFace!
     FT_GlyphSlot ftSlot;
+
 };
 
 class FreetypeHelper {

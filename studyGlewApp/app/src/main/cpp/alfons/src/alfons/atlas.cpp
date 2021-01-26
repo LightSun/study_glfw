@@ -181,7 +181,9 @@ bool GlyphAtlas::createGlyph(const Font& _font, const GlyphKey& _key, AtlasGlyph
 
     auto glyphItem = atlas->glyphMap.emplace(_key, Glyph(x, y, w + pad * 2, h + pad * 2,
                                                         glm::vec2(gd->x0, gd->y0) - float(pad),
-                                                        glm::vec2(w, h) + float(pad * 2)));
+                                                        glm::vec2(w, h) + float(pad * 2),
+                                                        gd->getBaselineMarginTop())
+                                                        );
     _entry.atlas = id;
     _entry.glyph = &(glyphItem.first->second);
 

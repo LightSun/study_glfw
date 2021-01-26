@@ -116,8 +116,8 @@ extern "C" void doTest0(int width, int height){
 /**
  * 文字处理一般包括： 测量，绘制在指定宽度内, 颜色，
  * 粗体，斜体， //通过设置不同的font
- * 下划线，删除线，等
- * 行间隔，字符间隔。左对齐，右对齐
+ * 下划线，删除线，省略号 等
+ * 行间隔，字符间隔。
  * 加载系统字体.
  */
 extern "C" void onDraw(/*GLFWwindow *window, */int width, int height) {
@@ -187,7 +187,15 @@ extern "C" void onDraw(/*GLFWwindow *window, */int width, int height) {
     renderer.end();
 
 }
-
+/** 下划线和删除线
+ * A "font effect" is nothing more than drawing text and then drawing something on top of it.
+ * An underline font is exactly what it looks like: drawing text, then drawing a line under it.
+ * In the case of OpenGL, you would use line rendering.
+ * Strikethrough is simply a matter of drawing that light higher.
+The only real question is where to draw the line. For underlines, you draw it at the baseline.
+ For strikethrough, you draw it maybe 2/5ths of the way from the baseline to the top.
+ Or whatever looks good.
+ */
 /*int main() {
     glfwLoop();
     renderer.dispose();
