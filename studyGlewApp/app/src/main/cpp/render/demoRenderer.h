@@ -122,14 +122,14 @@ public:
 
         defaultShaderProgram = linkShaderProgram(vertexShaderSrc, defaultFragShaderSrc);
 
-        posAttrib = glGetAttribLocation(defaultShaderProgram, "a_position");
-        texCoordAttrib = glGetAttribLocation(defaultShaderProgram, "a_texCoord");
+        posAttrib = (GLuint)glGetAttribLocation(defaultShaderProgram, "a_position");
+        texCoordAttrib = (GLuint)glGetAttribLocation(defaultShaderProgram, "a_texCoord");
 
-        uMvp = glGetUniformLocation(defaultShaderProgram, "u_mvp");
-        uColor = glGetUniformLocation(defaultShaderProgram, "u_color");
+        uMvp = (GLuint)glGetUniformLocation(defaultShaderProgram, "u_mvp");
+        uColor = (GLuint)glGetUniformLocation(defaultShaderProgram, "u_color");
 
-        uMin= glGetUniformLocation(defaultShaderProgram, "u_min");
-        uMax= glGetUniformLocation(defaultShaderProgram, "u_max");
+        uMin= (GLuint)glGetUniformLocation(defaultShaderProgram, "u_min");
+        uMax= (GLuint)glGetUniformLocation(defaultShaderProgram, "u_max");
 
         //LOGD("posAttrib = %d, texCoordAttrib= %d", posAttrib, texCoordAttrib);
         setAttributeIds(posAttrib, texCoordAttrib);

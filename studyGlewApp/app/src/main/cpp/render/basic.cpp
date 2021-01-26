@@ -98,7 +98,10 @@ extern "C" void onSetup(const char *fontDir) {
 
 }
 /**
- * 文字处理一般包括： 测量，绘制在指定宽度内. 颜色，下划线，删除线，等
+ * 文字处理一般包括： 测量，绘制在指定宽度内, 颜色，
+ * 粗体，斜体，下划线，删除线，等
+ * 行间隔，字符间隔。
+ * 加载系统字体.
  */
 extern "C" void onDraw(/*GLFWwindow *window, */int width, int height) {
 #ifdef NANO_VG

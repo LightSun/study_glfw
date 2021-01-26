@@ -156,6 +156,8 @@ bool FontFace::load() {
     m_metrics.ascent = m_ftFace->size->metrics.ascender / 64.f;
     m_metrics.descent = -m_ftFace->size->metrics.descender / 64.f;
 
+    //underline_thickness: 下划线宽度
+    //underline_position: 下划线相对基线的垂直距离，如果低于基线，为负值
     m_metrics.lineThickness = m_ftFace->underline_thickness / 64.f;
     m_metrics.underlineOffset = -m_ftFace->underline_position / 64.f;
 
