@@ -90,7 +90,10 @@ struct GlyphData {
         return true;
     }
     int getBaselineMarginTop() const{
-        return horBaseline - y0;
+        if(ftSlot){
+            return horBaseline - y0;
+        }
+        return 0;
     }
 
     FT_Glyph ftGlyph;
