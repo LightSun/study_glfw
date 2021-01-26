@@ -35,6 +35,7 @@ public class FontRender extends IGLRender {
     public void onSurfaceChanged(GL10 gl, int width, int height) {
         System.out.println("onSurfaceChanged");
         api.resize(width, height);
+        api.doTest();
     }
 
     @Override

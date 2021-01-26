@@ -95,7 +95,14 @@ extern "C" void onSetup(const char *fontDir) {
 #ifdef NANO_VG
     vg = nvgCreateGL2(NVG_ANTIALIAS | NVG_STENCIL_STROKES | NVG_DEBUG);
 #endif
+}
 
+extern "C" void doTest0(int width, int height){
+    auto layout = shaper.shape(font, "那時、天下人的口音言語、都是一樣。的肌肤的肌肤mdfjdjfdfjdfjdfjdfdjskfafk，"
+                                     " 好烦好烦。dsfsdjsfjsfj， 对符合当时发生的符合。");
+    float out[2];
+    batch.measure(layout, width / 2.0f, height, out);
+    LOGD("doTest0:  measure result wh = (%.2f, %.2f), width = %d", out[0], out[1]);
 }
 /**
  * 文字处理一般包括： 测量，绘制在指定宽度内, 颜色，

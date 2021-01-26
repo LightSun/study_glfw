@@ -23,6 +23,9 @@ public:
         height = h;
     }
     virtual void draw(){}
+
+    virtual void doTest() {
+    }
 };
 
 char *merge(const char *s1, const char *s2);

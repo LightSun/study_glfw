@@ -38,9 +38,15 @@ public final class JNIApi {
             mPtr = 0;
         }
     }
+    //call this to do some test. should call after resize.
+    public void doTest(){
+        nAfterInit(getNativePtr());
+    }
     private static native long nCreate();
     private static native void nInit(long ptr, String fontDir);
     private static native void nResize(long ptr, int width, int height);
     private static native void nDraw(long ptr);
     private static native void nDestroy(long mPtr);
+
+    private static native void nAfterInit(long mPtr);
 }

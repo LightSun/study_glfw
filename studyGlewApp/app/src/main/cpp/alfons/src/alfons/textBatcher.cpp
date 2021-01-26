@@ -79,7 +79,7 @@ namespace alfons {
 
     void TextBatcher::drawShape(const Font &_font, const Shape &_shape,
                                 const glm::vec2 &_position, float _scale,
-                                LineMetrics &_metrics) {
+                                LineMetrics &_metrics, bool draw) {
 
         AtlasGlyph atlasGlyph;
         if (!m_atlas.getGlyph(_font, {_shape.face, _shape.codepoint}, atlasGlyph)) {
@@ -92,8 +92,9 @@ namespace alfons {
         if (m_hasClip && clip(rect)) {
             return;
         }
-
-        m_mesh.drawGlyph(rect, atlasGlyph);
+        if(draw){
+            m_mesh.drawGlyph(rect, atlasGlyph);
+        }
 
         if (&_metrics != &NO_METRICS) {
             _metrics.addExtents({rect.x1, rect.y1, rect.x2, rect.y2});
@@ -133,12 +134,12 @@ namespace alfons {
     }
 
     glm::vec2 TextBatcher::drawShapeRange(const LineLayout &_line, size_t _start, size_t _end,
-                                          glm::vec2 _position, LineMetrics &_metrics) {
+                                          glm::vec2 _position, LineMetrics &_metrics, bool draw) {
 
         for (size_t j = _start; j < _end; j++) {
             auto &c = _line.shapes()[j];
             if (!c.isSpace) {
-                drawShape(_line.font(), c, _position, _line.scale(), _metrics);
+                drawShape(_line.font(), c, _position, _line.scale(), _metrics, draw);
             }
 
             _position.x += _line.advance(c);
@@ -262,6 +263,79 @@ namespace alfons {
             _offsetX += half;
         }
         return _offsetX;
+    }
+    //---------------------- measures --------------
+    void TextBatcher::measure(const alfons::LineLayout &_line, float maxWidth, float maxHeight,
+                              float out[2]) {
+
+        memset(out, 0, 2); //wh
+        if (_line.shapes().empty()) {
+            return;
+        }
+
+        float lineWidth = 0;
+        float startX = 0;
+
+        float adv = 0;
+        size_t shapeCount = 0;
+
+        float lastWidth = 0;
+        size_t lastShape = 0;
+        size_t startShape = 0;
+
+        LineMetrics _metrics;//
+        glm::vec2 _position = {0, 0};
+
+        for (auto &shape : _line.shapes()) {
+
+            if (!shape.cluster) {
+                shapeCount++;
+                lineWidth += _line.advance(shape);
+                continue;
+            }
+
+            shapeCount++;
+            lineWidth += _line.advance(shape);
+
+            // is break - or must break?
+            if (shape.canBreak || shape.mustBreak) {
+                lastShape = shapeCount;
+                lastWidth = lineWidth;
+            }
+            //换行
+            if (lastShape != 0 && (lineWidth > maxWidth) || shape.mustBreak) {
+                auto &endShape = _line.shapes()[lastShape - 1];
+                if (endShape.isSpace) {
+                    lineWidth -= _line.advance(endShape);
+                    lastWidth -= _line.advance(endShape);
+                }
+
+                adv = std::max(adv, drawShapeRange(_line, startShape, lastShape,
+                                                   _position, _metrics, false).x);
+
+                _position.y += _line.height();
+                 _position.x = startX;
+                out[1] += _line.height();
+                out[0] = std::max(out[0], lineWidth);
+
+                lineWidth -= lastWidth;
+                startShape = lastShape;
+                lastShape = 0;
+
+                if(maxHeight > 0 && out[1] + _line.height() > maxHeight){
+                    return;
+                }
+            }
+        }
+        if (startShape < shapeCount) {
+            adv = std::max(adv, drawShapeRange(_line, startShape, shapeCount,
+                                               _position, _metrics, false).x);
+            _position.y += _line.height();
+            out[1] += _line.height();
+        }
+        _position.x = adv;
+        LOGD("measure:  _position.xy = (%.2f, %.2f), wh = (%.2f, %.2f)",
+                _position.x, _position.y, _metrics.width(), _metrics.height());
     }
 
 }

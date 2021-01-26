@@ -7,6 +7,7 @@
 
 extern "C" void onSetup(const char *fontDir);
 extern "C" void onDraw(int width, int height);
+extern "C" void doTest0(int width, int height);
 
 void AlfonsFontRender::init(const char *fontDir) {
     onSetup(fontDir);
@@ -23,4 +24,7 @@ void AlfonsFontRender::draw() {
 
 void AlfonsFontRender::destroy() {
 
+}
+void AlfonsFontRender::doTest() {
+    doTest0(width, height);
 }

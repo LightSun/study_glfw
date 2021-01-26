@@ -42,6 +42,14 @@ struct LineMetrics {
         return 0;
     }
 
+    float width() {
+        if (aabb[0] != std::numeric_limits<float>::max()) {
+            return aabb[2] - aabb[0];
+        }
+        // Not initialized
+        return 0;
+    }
+
     void addExtents(glm::vec4 other) {
         aabb.x = std::min(aabb.x, other.x);
         aabb.y = std::min(aabb.y, other.y);
@@ -74,10 +82,10 @@ public:
     }
 
     void drawShape(const Font& font, const Shape& shape, const glm::vec2& position,
-                   float scale, LineMetrics& metrics = NO_METRICS);
+                   float scale, LineMetrics& metrics = NO_METRICS, bool draw = true);
 
     glm::vec2 drawShapeRange(const LineLayout& _line, size_t _start, size_t _end,
-                             glm::vec2 _position, LineMetrics& _metrics = NO_METRICS);
+                             glm::vec2 _position, LineMetrics& _metrics = NO_METRICS, bool draw = true);
 
     glm::vec2 draw(const LineLayout& line, glm::vec2 position, LineMetrics& metrics = NO_METRICS);
 
@@ -94,6 +102,9 @@ public:
 
     float draw(const LineLayout& line, const LineSampler& path,
                float offsetX = 0, float offsetY = 0);
+
+    //-----------------------------
+    void measure(const LineLayout& line, float maxWidth, float maxHeight, float out[2]);
 
     QuadMatrix& matrix() { return *m_matrix; }
 

@@ -57,3 +57,9 @@ Java_com_heaven7_android_glew_app_JNIApi_nCreate(JNIEnv *env, jclass cls) {
     ptr->env = env;
     return reinterpret_cast<jlong>(ptr);
 }
+extern "C"
+JNIEXPORT void JNICALL
+Java_com_heaven7_android_glew_app_JNIApi_nAfterInit(JNIEnv *env, jclass clazz, jlong ptr) {
+    JNIRender* _render = reinterpret_cast<JNIRender *>(ptr);
+    _render->doTest();
+}

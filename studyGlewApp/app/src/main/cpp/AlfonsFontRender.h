@@ -13,6 +13,7 @@ public:
     virtual void destroy();
     virtual void init(const char* fontDir);
     virtual void draw();
+    virtual void doTest();
 };
 
 #endif //STUDYGLEWAPP_ALFONSFONTRENDER_H
