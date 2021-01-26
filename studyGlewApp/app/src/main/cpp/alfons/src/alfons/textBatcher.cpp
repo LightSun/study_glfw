@@ -287,7 +287,7 @@ namespace alfons {
         glm::vec2 _position = {0, 0};
 
         for (auto &shape : _line.shapes()) {
-
+            LOGD("shape.cluster = %d, ", shape.cluster);
             if (!shape.cluster) {
                 shapeCount++;
                 lineWidth += _line.advance(shape);

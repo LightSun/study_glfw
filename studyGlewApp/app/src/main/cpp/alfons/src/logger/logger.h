@@ -3,7 +3,7 @@
 #include "tinyformat.h"
 
 #ifdef PLATFORM_ANDROID
-#define TAG "Alfons"
+#define TAG "alfons"
 
 #include <android/log.h>
 
@@ -12,14 +12,11 @@ void log(const char* fmt, const Args&... args) {
     __android_log_print(ANDROID_LOG_DEBUG, TAG, "%s", tfm::format(fmt, args...).c_str());
 }*/
 #define LOGD(...)                                      \
-    (void)(__android_log_print(ANDROID_LOG_DEBUG, TAG, \
-                               "%s", tfm::format(__VA_ARGS__).c_str()))
+    __android_log_print(ANDROID_LOG_DEBUG, TAG, __VA_ARGS__)
 #define LOGI(...)                                     \
-    (void)(__android_log_print(ANDROID_LOG_INFO, TAG, \
-                               "%s", tfm::format(__VA_ARGS__).c_str()))
+    __android_log_print(ANDROID_LOG_INFO, TAG, __VA_ARGS__)
 #define LOGE(...)                                      \
-    (void)(__android_log_print(ANDROID_LOG_ERROR, TAG, \
-                               "%s", tfm::format(__VA_ARGS__).c_str()))
+    __android_log_print(ANDROID_LOG_ERROR, TAG, __VA_ARGS__)
 
 #else
 

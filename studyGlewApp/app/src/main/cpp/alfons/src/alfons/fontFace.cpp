@@ -109,7 +109,7 @@ bool FontFace::load() {
                             m_descriptor.source.uri().c_str(),
                             m_descriptor.faceIndex, &m_ftFace);
         if (error) {
-            LOGE("Missing font: error: %d %s", error, m_descriptor.source.uri());
+            LOGE("Missing font: error: %d %s", error, m_descriptor.source.uri().c_str());
             m_invalid = true;
             return false;
         }
@@ -189,7 +189,7 @@ bool FontFace::load() {
         }
     }
 
-    LOGI("LOADED Font: %s size: %d", getFullName(), m_baseSize);
+    LOGI("LOADED Font: %s size: %d", getFullName().c_str(), m_baseSize);
 
     m_loaded = true;
     return true;

@@ -78,15 +78,23 @@ extern "C" void onSetup(const char *fontDir) {
     l.push_back(shaper.shape(font,
                              "ERA entonces toda la tierra de una lengua y unas mismas palabras."));
     l.push_back(shaper.shape(font, "Toute la terre avait une seule langue et les mêmes mots."));
-    l.push_back(
-            shaper.shape(font, "nוַיְהִי כָל-הָאָרֶץ, שָׂפָה אֶחָת, וּדְבָרִים, אֲחָדִים.")); //he
+
+    l.push_back(shaper.shape(font, "nוַיְהִי כָל-הָאָרֶץ, שָׂפָה אֶחָת, וּדְבָרִים, אֲחָדִים.")); //he
     l.push_back(shaper.shape(font, "सारी पृथ्वी पर एक ही भाषा, और एक ही बोली थी।")); // hi
     l.push_back(shaper.shape(font, "全地は同じ発音、同じ言葉であった。")); //ja
     l.push_back(shaper.shape(font, "온 땅의 구음이 하나이요 언어가 하나이었더라")); //ko
     l.push_back(shaper.shape(font, "На всей земле был один язык и одно наречие."));
-    l.push_back(shaper.shape(font,
-                             "那時、天下人的口音言語、都是一樣。的肌肤的肌肤mdfjdjfdfjdfjdfjdfdjskfafk， 好烦好烦。dsfsdjsfjsfj， 对符合当时发生的符合。")); //zh-tw
 
+    std::string str = "那時、天下人的口音言語、都是一樣。的肌肤的肌肤mdfjdjfdfjdfjdfjdfdjskfafk，dfdf好烦好烦。dsfsdjsfjsfj，adada对符合当时发生的符合。";
+    l.push_back(shaper.shape(font, str)); //zh-tw
+
+    str = "那時、天下人的口音言語、都是一樣。\n的肌肤的肌肤mdfjdjfdfjdfjdfjdfdjskfafk， 好烦好烦。dsfsdjsfjsfj， 对符合当时发生的符合。";
+    l.push_back(shaper.shape(font, str)); //zh-tw
+
+
+    auto layout = shaper.shape(font, str);
+    layout.setScale(2.0f);
+    l.push_back(layout);
     // BIDI - RTL paragraph
     // l.push_back(shaper.shape(font, "ممم 26 يي\r\nيي 12\r\n34 ووووو end"));
     // BIDI - LTR paragraph
@@ -102,12 +110,13 @@ extern "C" void doTest0(int width, int height){
                                      " 好烦好烦。dsfsdjsfjsfj， 对符合当时发生的符合。");
     float out[2];
     batch.measure(layout, width / 2.0f, height, out);
-    LOGD("doTest0:  measure result wh = (%.2f, %.2f), width = %d", out[0], out[1]);
+    LOGD("doTest0:  measure result wh = (%.2f, %.2f), width = %.2f, height = %d",
+            out[0], out[1], width / 2.0f, height);
 }
 /**
  * 文字处理一般包括： 测量，绘制在指定宽度内, 颜色，
  * 粗体，斜体，下划线，删除线，等
- * 行间隔，字符间隔。
+ * 行间隔，字符间隔。左对齐，右对齐
  * 加载系统字体.
  */
 extern "C" void onDraw(/*GLFWwindow *window, */int width, int height) {
@@ -149,7 +158,7 @@ extern "C" void onDraw(/*GLFWwindow *window, */int width, int height) {
     nvgEndFrame(vg);
 #endif
 
-    renderer.beginFrame(width, height);
+    renderer.beginFrame(width, height);//default setRange 0.3f-0.7f
 
     float inner = 0.1;
     float outer = 0.3;
@@ -170,7 +179,7 @@ extern "C" void onDraw(/*GLFWwindow *window, */int width, int height) {
 
     {  //option 3: 红色
         renderer.setColor({1.0, 0.0, 0.0, 1.0});
-        renderer.setRange(0, 1);
+       // renderer.setRange(0, 1);
         renderer.draw();
     }
 
