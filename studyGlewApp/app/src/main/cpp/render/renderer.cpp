@@ -24,7 +24,7 @@ namespace alfons {
     Renderer::~Renderer() {}
 
     void Renderer::drawUnderLine(const alfons::Rect &rect, const AtlasGlyph &_glyph, TextPaint& paint) {
-        //TODO batches[_glyph.atlas].addUnderline(rect, _glyph.glyph->baselineMarTop, paint);
+         batches[_glyph.atlas].addUnderline(rect, _glyph.glyph->baselineMarTop, paint);
     }
 
     void Renderer::drawGlyph(const Quad &_quad, const AtlasGlyph &_glyph) {

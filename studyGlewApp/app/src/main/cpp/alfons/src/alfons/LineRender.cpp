@@ -35,25 +35,25 @@ namespace alfons{
         shader->destroy();
     }
     void LineRender::draw() {
-        glm::mat4 projectionMatrix = glm::ortho(0.0,
-                                      double(width),
-                                      double(height),
-                                      0.0, -1.0, 1.0);
+        glm::mat4 projectionMatrix = glm::ortho(0.0, double(width),
+                double(height), 0.0,
+                       -1.0, 1.0);
 
         shader->use();
+        glEnableVertexAttribArray(PositionHandle);
+
         float color[4];
         for (int i = 0; i < lines.size(); ++i) {
             auto& line = lines[i];
             line.getColor(color);
             glLineWidth(line.lineWidth);
 
-            glEnableVertexAttribArray(PositionHandle);
-            // vertex
+            // vertex .absolute cors
             glVertexAttribPointer(PositionHandle, COORDS_PER_VERTEX, GL_FLOAT, GL_FALSE,
                     VertexStride, &line.vertexes[0]);
 
             // color
-            glUniform4fv(ColorHandle, 4, &color[0]);
+            glUniform4fv(ColorHandle, 1, &color[0]);
 
             //mvp
             glUniformMatrix4fv(MVPHandle, 1, GL_FALSE, glm::value_ptr(projectionMatrix));
@@ -62,7 +62,7 @@ namespace alfons{
             // Draw
             glDrawArrays(GL_LINES, 0, VertexCount);
 
-            glDisableVertexAttribArray(PositionHandle);
         }
+        glDisableVertexAttribArray(PositionHandle);
     }
 }
