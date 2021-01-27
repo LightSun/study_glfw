@@ -2,14 +2,17 @@ package com.heaven7.android.glew.app;
 
 public final class JNIApi {
 
+    public static final int TYPE_ALFONS_FONT = 1;
+    public static final int TYPE_LINE_RENDER = 2;
+
     private long mPtr;
 
     static {
         System.loadLibrary("studyGlfw");
     }
 
-    public JNIApi(){
-        mPtr = nCreate();
+    public JNIApi(int type){
+        mPtr = nCreate(type);
     }
 
     @Override
@@ -42,7 +45,7 @@ public final class JNIApi {
     public void doTest(){
         nAfterInit(getNativePtr());
     }
-    private static native long nCreate();
+    private static native long nCreate(int type);
     private static native void nInit(long ptr, String fontDir);
     private static native void nResize(long ptr, int width, int height);
     private static native void nDraw(long ptr);

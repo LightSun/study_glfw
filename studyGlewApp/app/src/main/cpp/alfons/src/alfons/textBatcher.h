@@ -82,29 +82,36 @@ public:
     }
 
     void drawShape(const Font& font, const Shape& shape, const glm::vec2& position,
-                   float scale, LineMetrics& metrics = NO_METRICS, bool draw = true);
+                   FontFace::Metrics& metric,TextPaint& paint, LineMetrics& metrics = NO_METRICS, bool draw = true);
 
-    glm::vec2 drawShapeRange(const LineLayout& _line, size_t _start, size_t _end,
+    glm::vec2 drawShapeRange(LineLayout& _line, size_t _start, size_t _end,
                              glm::vec2 _position, LineMetrics& _metrics = NO_METRICS, bool draw = true);
 
-    glm::vec2 draw(const LineLayout& line, glm::vec2 position, LineMetrics& metrics = NO_METRICS);
+    glm::vec2 draw(LineLayout& line, glm::vec2 position, LineMetrics& metrics = NO_METRICS);
 
-    glm::vec2 draw(const LineLayout& line, float x, float y, LineMetrics& metrics = NO_METRICS) {
+    glm::vec2 draw(LineLayout& line, float x, float y, LineMetrics& metrics = NO_METRICS) {
         return draw(line, {x, y}, metrics);
     }
 
-    //return drawed end x and y
-    glm::vec2 draw(const LineLayout& line, glm::vec2 position, float width,
+    /**
+     * prepare The draw data
+     * @param line hor layout
+     * @param position draw start position
+     * @param width the width
+     * @param metrics the metrics
+     * @return the end position(x with y) of draw
+     */
+    glm::vec2 draw(LineLayout& line, glm::vec2 position, float width,
                    LineMetrics& metrics = NO_METRICS);
 
-    glm::vec2 draw(const LineLayout& line, size_t start, size_t end, glm::vec2 position,
+    glm::vec2 draw(LineLayout& line, size_t start, size_t end, glm::vec2 position,
                    LineMetrics& metrics = NO_METRICS);
 
-    float draw(const LineLayout& line, const LineSampler& path,
+    float draw(LineLayout& line, const LineSampler& path,
                float offsetX = 0, float offsetY = 0);
 
     //-----------------------------
-    void measure(const LineLayout& line, float maxWidth, float maxHeight, float out[2]);
+    void measure(LineLayout& line, float maxWidth, float maxHeight, float out[2]);
 
     QuadMatrix& matrix() { return *m_matrix; }
 

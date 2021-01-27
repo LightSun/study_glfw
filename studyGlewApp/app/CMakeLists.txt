@@ -36,6 +36,7 @@ include_directories(src/main/cpp)
 include_directories(src/main/cpp/alfons/src)
 include_directories(src/main/cpp/alfons/src/linebreak)
 include_directories(src/main/cpp/alfons/src/logger)
+include_directories(src/main/cpp/render)
 
 set(ALFONS_BASE src/main/cpp/alfons/src)
 set(ALFONS_SRC
@@ -50,6 +51,7 @@ set(ALFONS_SRC
   ${ALFONS_BASE}/alfons/quadMatrix.cpp
   ${ALFONS_BASE}/alfons/path/lineSampler.cpp
   ${ALFONS_BASE}/alfons/path/splinePath.cpp
+  ${ALFONS_BASE}/alfons/LineRender.cpp
   # TODO part of icu-extras
   ${ALFONS_BASE}/alfons/scrptrun.cpp
 
@@ -73,11 +75,14 @@ set(ALFONS_SRC
 #aux_source_directory(src/main/cpp/glew/src src_glew)
 
 aux_source_directory(src/main/cpp src_all)
+aux_source_directory(src/main/cpp/demo src_all)
 set(RENDER_SRC
  src/main/cpp/render/basic.cpp
  src/main/cpp/render/lineWrap.cpp
  src/main/cpp/render/renderer.cpp
+ src/main/cpp/render/GLUtils.cpp
 )
+
 add_library(studyGlfw
     SHARED
     ${src_all}

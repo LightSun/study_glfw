@@ -23,8 +23,8 @@ struct Glyph {
         v2 = y0 + y1;
     }
 
-    glm::vec2 offset;
-    glm::vec2 size;
+    glm::vec2 offset;//x, y
+    glm::vec2 size;  //w, h
 
     uint16_t u1;
     uint16_t v1;

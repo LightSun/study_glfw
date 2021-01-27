@@ -23,6 +23,7 @@
 #include "glm/glm.hpp"
 #include "glm/gtx/transform.hpp"
 #include "glm/gtc/type_ptr.hpp"
+#include "GLUtils.h"
 
 static const char* vertexShaderSrc = R"END(
 #ifdef GL_ES
@@ -52,67 +53,13 @@ uniform float u_max;
 varying vec2 v_uv;
 void main(void) {
     vec4 texColor = texture2D(u_tex, v_uv);
-   // gl_FragColor = texColor * u_color; //display error
-    //gl_FragColor = u_color; //display error
+    //gl_FragColor = texColor * u_color; //display error
+    //gl_FragColor = u_color;            //display error
     gl_FragColor = smoothstep(u_min, u_max, texColor.a) * u_color;
     //gl_FragColor += 0.1;
     //smoothstep means:::  u_min > texColor.a ? 0 : ((u_max < 1 ? 1 : (0~1)))
 }
 )END";
-
-
-static void printShaderInfoLog(GLuint shader) {
-    GLint length = 0;
-    glGetShaderiv(shader, GL_INFO_LOG_LENGTH, &length);
-    if (length > 1) {
-        char* log = (char*) malloc(sizeof(char) * length);
-        glGetShaderInfoLog(shader, length, NULL, log);
-        printf("Log: %s\n", log);
-        free(log);
-    }
-}
-
-static GLuint compileShader(const GLchar* src, GLenum type) {
-    GLuint shader = glCreateShader(type);
-    glShaderSource(shader, 1, &src, NULL);
-    glCompileShader(shader);
-    GLint status;
-    glGetShaderiv(shader, GL_COMPILE_STATUS, &status);
-
-    if (!status) {
-        printShaderInfoLog(shader);
-        glDeleteShader(shader);
-        exit(-1);
-    }
-    return shader;
-}
-
-static GLuint linkShaderProgram(const GLchar* vertexSrc, const GLchar* fragmentSrc) {
-    GLuint program = glCreateProgram();
-    GLuint vertex = compileShader(vertexSrc, GL_VERTEX_SHADER);
-    GLuint fragment = compileShader(fragmentSrc, GL_FRAGMENT_SHADER);
-    glAttachShader(program, vertex);
-    glAttachShader(program, fragment);
-    glLinkProgram(program);
-    GLint linkStatus;
-    glGetProgramiv(program, GL_LINK_STATUS, &linkStatus);
-
-    if (!linkStatus) {
-        printShaderInfoLog(program);
-        glDeleteProgram(program);
-        exit(-1);
-    }
-    return program;
-}
-
-static void glCheckError(const char* str) {
-    GLenum err;
-    err = glGetError();
-    if (err != GL_NO_ERROR) {
-        printf("Error %08x %d after %s\n", err, err, str);
-        return;
-    }
-}
 
 class DemoRenderer : public alfons::Renderer {
 public:
@@ -120,7 +67,7 @@ public:
     void init() {
         Renderer::init();
 
-        defaultShaderProgram = linkShaderProgram(vertexShaderSrc, defaultFragShaderSrc);
+        defaultShaderProgram = GLUT::linkShaderProgram(vertexShaderSrc, defaultFragShaderSrc);
 
         posAttrib = (GLuint)glGetAttribLocation(defaultShaderProgram, "a_position");
         texCoordAttrib = (GLuint)glGetAttribLocation(defaultShaderProgram, "a_texCoord");

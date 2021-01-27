@@ -78,7 +78,7 @@ namespace alfons {
     }
 
     void TextBatcher::drawShape(const Font &_font, const Shape &_shape,
-                                const glm::vec2 &_position, float _scale,
+                                const glm::vec2 &_position, FontFace::Metrics& fontMat, TextPaint& paint,
                                 LineMetrics &_metrics, bool draw) {
 
         AtlasGlyph atlasGlyph;
@@ -87,13 +87,16 @@ namespace alfons {
         }
 
         Rect rect;
-        setupRect(_shape, _position, _scale, rect, atlasGlyph);
+        setupRect(_shape, _position, paint.getScale(), rect, atlasGlyph);
 
         if (m_hasClip && clip(rect)) {
             return;
         }
         if(draw){
             m_mesh.drawGlyph(rect, atlasGlyph);
+            if(paint.drawUnderline){
+                m_mesh.drawUnderLine(rect, atlasGlyph, paint);
+            }
         }
 
         if (&_metrics != &NO_METRICS) {
@@ -129,17 +132,17 @@ namespace alfons {
     }
 
     glm::vec2
-    TextBatcher::draw(const LineLayout &_line, glm::vec2 _position, LineMetrics &_metrics) {
+    TextBatcher::draw(LineLayout &_line, glm::vec2 _position, LineMetrics &_metrics) {
         return draw(_line, 0, _line.shapes().size(), _position, _metrics);
     }
 
-    glm::vec2 TextBatcher::drawShapeRange(const LineLayout &_line, size_t _start, size_t _end,
+    glm::vec2 TextBatcher::drawShapeRange(LineLayout &_line, size_t _start, size_t _end,
                                           glm::vec2 _position, LineMetrics &_metrics, bool draw) {
 
         for (size_t j = _start; j < _end; j++) {
             auto &c = _line.shapes()[j];
             if (!c.isSpace) {
-                drawShape(_line.font(), c, _position, _line.scale(), _metrics, draw);
+                drawShape(_line.font(), c, _position, _line.metrics(), _line.getTextPaint(), _metrics, draw);
             }
 
             _position.x += _line.advance(c);
@@ -147,7 +150,7 @@ namespace alfons {
         return _position;
     }
 
-    glm::vec2 TextBatcher::draw(const LineLayout &_line, size_t _start, size_t _end,
+    glm::vec2 TextBatcher::draw(LineLayout &_line, size_t _start, size_t _end,
                                 glm::vec2 _position, LineMetrics &_metrics) {
 
         float startX = _position.x;
@@ -155,7 +158,7 @@ namespace alfons {
         for (size_t j = _start; j < _end; j++) {
             auto &c = _line.shapes()[j];
             if (!c.isSpace) {
-                drawShape(_line.font(), c, _position, _line.scale(), _metrics);
+                drawShape(_line.font(), c, _position, _line.metrics(), _line.getTextPaint(), _metrics);
             }
 
             _position.x += _line.advance(c);
@@ -170,7 +173,7 @@ namespace alfons {
         return _position;
     }
 
-    glm::vec2 TextBatcher::draw(const LineLayout &_line, glm::vec2 _position, float _width,
+    glm::vec2 TextBatcher::draw(LineLayout &_line, glm::vec2 _position, float _width,
                                 LineMetrics &_metrics) {
 
         if (_line.shapes().empty()) { return _position; }
@@ -187,8 +190,8 @@ namespace alfons {
 
         for (auto &shape : _line.shapes()) {
             //shape.cluster always 1
-            LOGD("shape.cluster = %d, codePoint = %u, canBreak = %d, mustBreak = %d, isSpace = %d",
-                    shape.cluster, shape.codepoint, shape.canBreak, shape.mustBreak, shape.isSpace);
+            /*LOGD("shape.cluster = %d, codePoint = %u, canBreak = %d, mustBreak = %d, isSpace = %d",
+                    shape.cluster, shape.codepoint, shape.canBreak, shape.mustBreak, shape.isSpace);*/
             if (!shape.cluster) {
                 shapeCount++;
                 lineWidth += _line.advance(shape);
@@ -198,7 +201,7 @@ namespace alfons {
             shapeCount++;
             lineWidth += _line.advance(shape);
 
-            // is break - or must break? mustBreak 通常表示句号等标点符号
+            // is break - or must break?    mustBreak 通常表示句号等标点符号
             if (shape.canBreak || shape.mustBreak) {
                 lastShape = shapeCount;
                 lastWidth = lineWidth;
@@ -211,10 +214,10 @@ namespace alfons {
                     lastWidth -= _line.advance(endShape);
                 }
                 //------- start heaven7 ---------
-                else if(!shape.mustBreak && shape.canBreak){
-                    lastShape --;
-                    lineWidth -= _line.advance(shape);
-                    lastWidth -= _line.advance(shape);
+                else if(!endShape.mustBreak && endShape.canBreak){
+                    //lastShape --;
+                    lineWidth -= _line.advance(endShape);
+                    lastWidth -= _line.advance(endShape);
                 }
                 //------- end heaven7 ---------
 
@@ -241,7 +244,7 @@ namespace alfons {
         return _position;
     }
 
-    float TextBatcher::draw(const LineLayout &_line, const LineSampler &_path,
+    float TextBatcher::draw(LineLayout &_line, const LineSampler &_path,
                             float _offsetX, float _offsetY) {
 
         bool reverse = false; //(line.direction() == HB_DIRECTION_RTL);
@@ -249,7 +252,7 @@ namespace alfons {
         // float sampleSize = 0.1 * line.height();
 
         auto &font = _line.font();
-        float scale = _line.scale();
+        float scale = _line.getScale();
 
         glm::vec2 position;
         float angle;
@@ -274,7 +277,7 @@ namespace alfons {
         return _offsetX;
     }
     //---------------------- measures --------------
-    void TextBatcher::measure(const alfons::LineLayout &_line, float maxWidth, float maxHeight,
+    void TextBatcher::measure(alfons::LineLayout &_line, float maxWidth, float maxHeight,
                               float out[2]) {
 
         memset(out, 0, 2); //wh
@@ -317,11 +320,11 @@ namespace alfons {
                 if (endShape.isSpace) {
                     lineWidth -= _line.advance(endShape);
                     lastWidth -= _line.advance(endShape);
-                } else if(!shape.mustBreak && shape.canBreak){
+                } else if(!endShape.mustBreak && endShape.canBreak){
                     //如果可以中断
-                    lastShape --;
-                    lineWidth -= _line.advance(shape);
-                    lastWidth -= _line.advance(shape);
+                    //lastShape --;
+                    lineWidth -= _line.advance(endShape);
+                    lastWidth -= _line.advance(endShape);
                 }
 
                 adv = std::max(adv, drawShapeRange(_line, startShape, lastShape,

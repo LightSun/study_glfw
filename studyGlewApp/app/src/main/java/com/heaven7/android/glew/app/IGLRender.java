@@ -12,5 +12,7 @@ public abstract class IGLRender implements GLSurfaceView.Renderer {
         return 3;
     }
 
-    public abstract void setUp(Runnable next);
+    public void setUp(Runnable next){
+        next.run();
+    }
 }

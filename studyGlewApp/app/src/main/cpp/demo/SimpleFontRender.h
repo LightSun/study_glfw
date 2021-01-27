@@ -10,6 +10,7 @@
 /**
  * because harfbuzz-example is demo on pc. but not work direct on android. this demo not render ok on gles.
  */
+ //TODO
 class SimpleFontRender: public JNIRender{
 
 public:

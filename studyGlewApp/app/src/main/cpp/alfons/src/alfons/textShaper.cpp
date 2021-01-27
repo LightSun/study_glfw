@@ -456,6 +456,7 @@ LineLayout TextShaper::shape(std::shared_ptr<Font>& _font, const std::string& _t
                              hb_language_t _langHint, hb_direction_t _direction) {
 
     auto text = icu::UnicodeString::fromUTF8(_text);
+    //LOGD("raw len = %d, unicode len = %d", _text.size(), text.length());
     return shapeICU(_font, text, 1, 0, _langHint, _direction);
 }
 

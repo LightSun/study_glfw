@@ -2,6 +2,7 @@
 
 #include <stddef.h>
 #include <stdint.h>
+#include "TextPaint.h"
 
 namespace alfons {
 
@@ -26,6 +27,7 @@ namespace alfons {
         float y2;
     } Rect;
 
+    //used to add data to prepare draw.
     class MeshCallback {
     public:
         virtual void drawGlyph(const Quad &quad, const AtlasGlyph &glyph) {
@@ -33,6 +35,10 @@ namespace alfons {
         }
 
         virtual void drawGlyph(const Rect &rect, const AtlasGlyph &glyph) {
+
+        }
+
+        virtual void drawUnderLine(const Rect &rect, const AtlasGlyph &glyph, TextPaint& paint) {
 
         }
     };

@@ -15,6 +15,7 @@
 
 #include "glyph.h"
 #include "font.h"
+#include "TextPaint.h"
 
 #include <glm/vec2.hpp>
 #include <glm/vec4.hpp>
@@ -76,9 +77,10 @@ class LineLayout {
 
     float m_advance = 0;
     float m_middleLineFactor = 1;
-    float m_scale = 1;
 
     bool m_missingGlyphs = false;
+
+    TextPaint textPaint;
 
 public:
 
@@ -94,8 +96,7 @@ public:
           m_direction(_direction),
           m_metrics(_metrics),
           m_advance(0),
-          m_middleLineFactor(1.0),
-          m_scale(1) {
+          m_middleLineFactor(1.0){
 
         for (auto& shape : m_shapes) {
             m_advance += shape.advance;
@@ -125,14 +126,17 @@ public:
 
     const Font& font() const { return *m_font; }
 
-    FontFace::Metrics& metrics() { return m_metrics; }
+    FontFace::Metrics& metrics(){ return m_metrics; }
 
     glm::vec2 getOffset(Alignment alignX, Alignment alignY) const {
         return glm::vec2(offsetX(alignX), offsetY(alignY));
     }
+    TextPaint& getTextPaint(){
+        return textPaint;
+    }
 
-    float scale() const {
-        return m_scale;
+    inline float getScale() const {
+        return textPaint.getScale();
     }
 
     hb_direction_t direction() const {
@@ -140,38 +144,38 @@ public:
     }
 
     float height() const {
-        return m_metrics.height * m_scale;
+        return m_metrics.height * getScale();
     }
 
     float ascent() const {
-        return m_metrics.ascent * m_scale;
+        return m_metrics.ascent * getScale();
     }
 
     float descent() const {
-        return m_metrics.descent * m_scale;
+        return m_metrics.descent * getScale();
     }
 
     float lineThickness() const {
-        return m_metrics.lineThickness * m_scale;
+        return m_metrics.lineThickness * getScale();
     }
 
     float advance() const {
-        return m_advance * m_scale;
+        return m_advance * getScale();
     }
 
     float advance(const Shape& shape) const {
-        return shape.advance * m_scale;
+        return shape.advance * getScale();
     }
 
-    void setScale(float scale) { m_scale = scale; }
-
-    float scale() { return m_scale; }
+    void setScale(float scale) {
+        textPaint.textSize = DEFAULT_TEXT_SIZE * scale;
+    }
 
     float offsetY(Alignment align) const {
         switch (align) {
         case Alignment::middle:
             return m_middleLineFactor *
-                (m_metrics.ascent - m_metrics.descent) * m_scale;
+                (m_metrics.ascent - m_metrics.descent) * getScale();
         case Alignment::top:
             return +ascent();
         case Alignment::bottom:

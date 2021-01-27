@@ -5,6 +5,7 @@ import android.os.Bundle;
 
 import com.heaven7.android.glew.app.render.FontRender;
 import com.heaven7.android.glew.app.render.LightDemoRender;
+import com.heaven7.android.glew.app.render.LineRenderDemo;
 import com.heaven7.core.util.BundleHelper;
 import com.heaven7.core.util.PermissionHelper;
 
@@ -47,6 +48,7 @@ public class MainActivity extends AbsMainActivity {
     @Override
     protected void addDemos(List<ActivityInfo> list) {
         addRenderDemo(FontRender.class, "Font render demo");
+        addRenderDemo(LineRenderDemo.class, "Line render demo");
         addRenderDemo(LightDemoRender.class, "light render demo");
     }
 }

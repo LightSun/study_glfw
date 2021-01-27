@@ -33,7 +33,8 @@ struct QuadBatch {
     uint16_t dirtyRect[4];
     bool dirty;
 
-    std::vector<Vertex> vertices;
+    std::vector<Vertex> vertices;    //vertex of glyph
+    std::vector<Vertex> lineVertices;
 
     void clear() { vertices.clear(); }
 
@@ -64,6 +65,11 @@ struct QuadBatch {
         vertices.emplace_back(_quad.x2 * 4.0f, _quad.y2 * 4.0f, _glyph.u1, _glyph.v2, _state);
         vertices.emplace_back(_quad.x3 * 4.0f, _quad.y3 * 4.0f, _glyph.u2, _glyph.v2, _state);
         vertices.emplace_back(_quad.x4 * 4.0f, _quad.y4 * 4.0f, _glyph.u2, _glyph.v1, _state);
+    }
+    void addUnderline(const Rect &_rect, int baselineMarginTop, TextPaint &paint) {
+        short x1 = _rect.x1 * 4.0f;
+        short y1 = _rect.y1 * 4.0f;
+        //TODO
     }
 };
 
@@ -96,6 +102,7 @@ public:
 
     void drawGlyph(const Quad& box, const AtlasGlyph& glyph) override;
     void drawGlyph(const Rect& rect, const AtlasGlyph& glyph) override;
+    void drawUnderLine(const Rect &rect, const AtlasGlyph &glyph,TextPaint& paint)  override;
 
     void addTexture(AtlasID id, uint16_t textureWidth, uint16_t textureHeight) override;
     void addGlyph(AtlasID, uint16_t gx, uint16_t gy, uint16_t gw, uint16_t gh,
@@ -118,6 +125,7 @@ private:
 
     void getIndices(uint capacity);
     void drawVertices(QuadBatch& quads);
+    void drawLines(QuadBatch& quads);
 
 #ifdef USE_SDF
     std::vector<unsigned char> tmp_buffer;
