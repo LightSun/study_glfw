@@ -14,12 +14,11 @@ import javax.microedition.khronos.opengles.GL10;
 
 public abstract class AbsNativeRender extends IGLRender {
 
-    protected final Activity context;
     protected JNIApi api;
     private String dir;
 
     public AbsNativeRender(Activity context) {
-        this.context = context;
+        super(context);
     }
 
     public final void setNativeRenderType(int type){

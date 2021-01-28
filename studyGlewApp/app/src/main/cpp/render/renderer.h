@@ -7,7 +7,7 @@
 #include <vector>
 #include <alfons/src/logger/logger.h>
 #include <alfons/src/alfons/LineRender.h>
-#include "LineRender.h"
+#include "alfons/LineRender.h"
 
 #define USE_SDF
 

@@ -28,13 +28,11 @@ public class LightDemoRender extends IGLRender {
     private static final float CAMERA[] = {0.0f, 0f, 3f};
 
     private int vCount;
-    private Context ctx;
     private FloatBuffer fbVertex;
     private FloatBuffer fbNormal;
     private FloatBuffer fbLight;
     private FloatBuffer fbCamera;
     static float[] mMMatrix = new float[16];
-    int mProgram;   // 自定义渲染管线程序id
 
     int muMVPMatrixHandle;// 总变换矩阵引用id
     int maPositionHandle; // 顶点位置属性引用id
@@ -47,8 +45,7 @@ public class LightDemoRender extends IGLRender {
     public static float[] mMVPMatrix;// 最后起作用的总变换矩阵
 
     public LightDemoRender(Activity ctx) {
-        super();
-        this.ctx = ctx;
+        super(ctx);
     }
 
     @Override
@@ -182,26 +179,7 @@ public class LightDemoRender extends IGLRender {
 
     //初始化shader
     private void initShader() {
-        String vertex = loadSH("glsl/vertex2.sh");
-        String shader = loadSH("glsl/frag2.sh");
-
-        int verS = GLES20.glCreateShader(GLES20.GL_VERTEX_SHADER);
-        if (verS != 0) {
-            GLES20.glShaderSource(verS, vertex);
-            GLES20.glCompileShader(verS);
-        }
-
-        int fragS = GLES20.glCreateShader(GLES20.GL_FRAGMENT_SHADER);
-        if (fragS != 0) {
-            GLES20.glShaderSource(fragS, shader);
-            GLES20.glCompileShader(fragS);
-        }
-        mProgram = GLES20.glCreateProgram();
-        if (mProgram != 0) {
-            GLES20.glAttachShader(mProgram, verS);
-            GLES20.glAttachShader(mProgram, fragS);
-            GLES20.glLinkProgram(mProgram);
-        }
+        loadAndLinkShaderFromAssets("glsl/vertex2.sh", "glsl/frag2.sh");
 
         maPositionHandle = GLES20.glGetAttribLocation(mProgram, "aPosition");
         muMVPMatrixHandle = GLES20.glGetUniformLocation(mProgram, "uMVPMatrix");
@@ -210,26 +188,6 @@ public class LightDemoRender extends IGLRender {
         maLightLocationHandle = GLES20.glGetUniformLocation(mProgram, "uLightLocation");
         //TODO 添加相机引用
         maCameraHandle = GLES20.glGetUniformLocation(mProgram, "uCamera");
-    }
-    //将sh文件加载进来
-    private String loadSH(String fname) {
-        String result = null;
-        try {
-            InputStream in = ctx.getAssets().open(fname);
-            int ch = 0;
-            ByteArrayOutputStream baos = new ByteArrayOutputStream();
-            while ((ch = in.read()) != -1) {
-                baos.write(ch);
-            }
-            byte[] buff = baos.toByteArray();
-            baos.close();
-            in.close();
-            result = new String(buff, "UTF-8");
-            result = result.replaceAll("\\r\\n", "\n");
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return result;
     }
     @Override
     public void setUp(Runnable next) {
