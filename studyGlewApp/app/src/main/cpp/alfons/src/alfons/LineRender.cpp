@@ -106,7 +106,7 @@ namespace alfons{
             glDrawArrays(GL_LINES, 0, VertexCount);
         }
         //draw fill rects
-        if(fillRects.size() > 0){
+        if(!fillRects.empty()){
             u_short drawOrder[6] = { 0, 1, 2, 0, 2, 3 };
             for (int i = 0; i < fillRects.size(); ++i) {
                 auto& rect = fillRects[i];
