@@ -37,19 +37,14 @@ namespace alfons{
             float left = rect.left();
             float top = rect.top();
             float right = rect.right();
-            float bottom = rect.bottom();
+            float bottom = rect.bottom() ;
 
             alfons::draw::Line line;
             line.strokeWidth = rect.strokeWidth;
             line.color = rect.color;
             //lt, rt
-            float vtx[6] = {left, top, 0.0f, right, top, 0.0f};
+            float vtx[6] = {left - rect.strokeWidth / 3, top, 0.0f, right + rect.strokeWidth / 3, top, 0.0f};
             line.setVertexes(vtx);
-            addLine(line);
-
-            //lt, lb
-            float vtx2[6] = {left, top, 0.0f, left, bottom, 0.0f};
-            line.setVertexes(vtx2);
             addLine(line);
 
             //rt, rb
@@ -58,8 +53,13 @@ namespace alfons{
             addLine(line);
 
             //lb, rb
-            float vtx4[6] = {left, bottom, 0.0f, right, bottom, 0.0f};
+            float vtx4[6] = {left - rect.strokeWidth / 3, bottom, 0.0f, right + rect.strokeWidth / 3, bottom, 0.0f};
             line.setVertexes(vtx4);
+            addLine(line);
+
+            //lt, lb
+            float vtx2[6] = {left, top, 0.0f, left, bottom, 0.0f};
+            line.setVertexes(vtx2);
             addLine(line);
         }
     }
@@ -80,6 +80,7 @@ namespace alfons{
         for (int i = 0; i < lines.size(); ++i) {
             auto& line = lines[i];
             line.getColor(color);
+
             glLineWidth(line.strokeWidth);
 
             // vertex .absolute cors
@@ -95,7 +96,6 @@ namespace alfons{
 
             // Draw
             glDrawArrays(GL_LINES, 0, VertexCount);
-
         }
         //draw fill rects
         if(fillRects.size() > 0){

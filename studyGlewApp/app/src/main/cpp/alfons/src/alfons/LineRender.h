@@ -73,37 +73,38 @@ namespace alfons {
             Rect(int color, float strokeWidth): GLShape(color, strokeWidth) {
             }
             void setRect(int left, int top, int right, int bottom){
-                // top left
-                // bottom left
-                // bottom right
-                // top right
-                vertexes[0] = top;
-                vertexes[1] = left;
+                //drawOrder[6] = { 0, 1, 2, 0, 2, 3 }
+                // left top
+                // left bottom
+                // right bottom
+                // right top
+                vertexes[0] = left;
+                vertexes[1] = top;
                 vertexes[2] = 0;
 
-                vertexes[3] = bottom;
-                vertexes[4] = left;
+                vertexes[3] = left;
+                vertexes[4] = bottom;
                 vertexes[5] = 0;
 
-                vertexes[6] = bottom;
-                vertexes[7] = right;
+                vertexes[6] = right;
+                vertexes[7] = bottom;
                 vertexes[8] = 0;
 
-                vertexes[9] = top;
-                vertexes[10] = right;
+                vertexes[9] = right;
+                vertexes[10] = top;
                 vertexes[11] = 0;
             }
             float left(){
-                return vertexes[1];
-            }
-            float top(){
                 return vertexes[0];
             }
+            float top(){
+                return vertexes[1];
+            }
             float right(){
-                return vertexes[7];
+                return vertexes[6];
             }
             float bottom(){
-                return vertexes[6];
+                return vertexes[7];
             }
         };
 
