@@ -46,7 +46,7 @@ void LineRenderDemo::doTest() {
     lineRender.addLine(line);
 
     alfons::draw::Rect rect;
-    rect.strokeWidth = 30;//TODO move to rect
+    rect.strokeWidth = 30;//TODO glLineWidth only can used once? move to rect
     rect.setColorF(1.0f, 0.0f, 0.0f, 1.0f);
     rect.setRect(200, 500, 400, 700);
     lineRender.addRect(rect, false);
