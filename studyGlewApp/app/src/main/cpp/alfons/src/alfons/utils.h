@@ -17,7 +17,15 @@
 
 namespace alfons {
 
-template <typename T>
+#define ALFONS_PI 3.14159265
+
+static inline float toRadius(float degree){
+    return degree * ALFONS_PI / 180.0f;
+}
+static inline float toDegree(float radius){
+    return radius * 180.0f / ALFONS_PI;
+}
+    template <typename T>
 static int search(T* array, T value, int min, int max) {
     int mid = (min + max) >> 1;
 

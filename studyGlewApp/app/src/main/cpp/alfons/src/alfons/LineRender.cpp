@@ -28,7 +28,15 @@ namespace alfons{
         lines.clear();
     }
     void LineRender::addLine(alfons::draw::Line &line) {
-        lines.insert(lines.begin() + lines.size(), line);
+        if(line.strokeWidth > 1){
+            //for glLineWidth can only effect once in one draw. so we used rect to draw stroke line.
+            alfons::draw::Rect rect;
+            rect.color = line.color;
+            line.strokeRect(rect);
+            addRect(rect, true);
+        } else{
+            lines.insert(lines.begin() + lines.size(), line);
+        }
     }
     void LineRender::addRect(alfons::draw::Rect &rect, bool fill) {
         if(fill){
@@ -43,7 +51,7 @@ namespace alfons{
             line.strokeWidth = rect.strokeWidth;
             line.color = rect.color;
             //lt, rt
-            float vtx[6] = {left - rect.strokeWidth / 3, top, 0.0f, right + rect.strokeWidth / 3, top, 0.0f};
+            float vtx[6] = {left, top, 0.0f, right, top, 0.0f};
             line.setVertexes(vtx);
             addLine(line);
 
@@ -53,7 +61,7 @@ namespace alfons{
             addLine(line);
 
             //lb, rb
-            float vtx4[6] = {left - rect.strokeWidth / 3, bottom, 0.0f, right + rect.strokeWidth / 3, bottom, 0.0f};
+            float vtx4[6] = {left, bottom, 0.0f, right, bottom, 0.0f};
             line.setVertexes(vtx4);
             addLine(line);
 

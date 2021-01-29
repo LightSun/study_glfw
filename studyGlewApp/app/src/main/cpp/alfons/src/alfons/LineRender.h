@@ -9,6 +9,7 @@
 #include <vector>
 #include <glm/detail/type_mat.hpp>
 #include <render/GLUtils.h>
+#include "utils.h"
 
 #include "gl.h"
 
@@ -72,7 +73,7 @@ namespace alfons {
             Rect(){}
             Rect(int color, float strokeWidth): GLShape(color, strokeWidth) {
             }
-            void setRect(int left, int top, int right, int bottom){
+            inline void setRect(float left, float top, float right, float bottom){
                 //drawOrder[6] = { 0, 1, 2, 0, 2, 3 }
                 // left top
                 // left bottom
@@ -94,16 +95,34 @@ namespace alfons {
                 vertexes[10] = top;
                 vertexes[11] = 0;
             }
-            float left(){
+            inline void setVertex2D(float x1, float y1, float x2, float y2,
+                             float x11, float y11, float x22, float y22){
+                vertexes[0] = x1;
+                vertexes[1] = y1;
+                vertexes[2] = 0;
+
+                vertexes[3] = x2;
+                vertexes[4] = y2;
+                vertexes[5] = 0;
+
+                vertexes[6] = x11;
+                vertexes[7] = y11;
+                vertexes[8] = 0;
+
+                vertexes[9] = x22;
+                vertexes[10] = y22;
+                vertexes[11] = 0;
+            }
+            inline float left(){
                 return vertexes[0];
             }
-            float top(){
+            inline float top(){
                 return vertexes[1];
             }
-            float right(){
+            inline float right(){
                 return vertexes[6];
             }
-            float bottom(){
+            inline float bottom(){
                 return vertexes[7];
             }
         };
@@ -131,6 +150,73 @@ namespace alfons {
                 vertexes[3] = x2;
                 vertexes[4] = y2;
                 vertexes[5] = 0;
+            }
+            inline void strokeRect(Rect& rect){
+                float x1 = vertexes[0];
+                float y1 = vertexes[1];
+                float x2 = vertexes[3];
+                float y2 = vertexes[4];
+                if(x1 == x2){
+                    rect.setRect(x1 - strokeWidth / 2, y1 - strokeWidth / 2, x1 + strokeWidth / 2, y2 + strokeWidth / 2);
+                } else if(y1 == y2){
+                    rect.setRect(x1 - strokeWidth / 2, y1 - strokeWidth / 2, x2 + strokeWidth / 2, y1 + strokeWidth / 2);
+                } else{
+                    float x11, y11, x22, y22;
+                    float tan = fabs(y2 - y1) / fabs(x2- x1);
+                    float radius = atan(tan);
+                    float degree = toDegree(radius);
+                    if(x1 < x2){
+                        if(y1 > y2){
+                            //    v11
+                            //v1 /\
+                            //   \ \
+                            // v2 \/ v22
+                            //sin(radius) = dx /stroke = sin(radius)
+                            x11 = sin(radius) * strokeWidth + x1;
+                            //sin = sin(toRadius(90 - degree)) = dy / stroke
+                            y11 = sin(toRadius(90 - degree)) * strokeWidth + y1;
+                            x22 = sin(radius) * strokeWidth + x2;
+                            y22 = sin(toRadius(90 - degree)) * strokeWidth + y2;
+                            rect.setVertex2D(x1, y1, x2, y2, x22, y22, x11, y11);
+                        } else{
+                            /*   v11
+                                   /\ v2
+                                  / /
+                              v22 \/ v1
+                             */
+                            //sin(radius) = dx /stroke = sin(radius)
+                            x11 = x2 - sin(radius) * strokeWidth;
+                            //sin = sin(toRadius(90 - degree)) = dy / stroke
+                            y11 = sin(toRadius(90 - degree)) * strokeWidth + y2;
+                            x22 = x1 - sin(radius) * strokeWidth;
+                            y22 = sin(toRadius(90 - degree)) * strokeWidth + y1;
+                            rect.setVertex2D(x11, y11, x22, y22, x1, y1, x2, y2);
+                        }
+                    } else{
+                        if(y1 > y2){
+                            /*   v11
+                                  /\ v1
+                                 / /
+                             v22 \/ v2
+                            */
+                            x11 = x1 - sin(radius) * strokeWidth;
+                            y11 = sin(toRadius(90 - degree)) * strokeWidth + y1;
+                            x22 = x2 - sin(radius) * strokeWidth;
+                            y22 = sin(toRadius(90 - degree)) * strokeWidth + y2;
+                            rect.setVertex2D(x11, y11, x22, y22, x2, y2, x1, y1);
+                        } else{
+                            //    v11
+                            //v2 /\
+                            //   \ \
+                            // v1 \/ v22
+                            x11 = sin(radius) * strokeWidth + x2;
+                            y11 = sin(toRadius(90 - degree)) * strokeWidth + y2;
+                            x22 = sin(radius) * strokeWidth + x1;
+                            y22 = sin(toRadius(90 - degree)) * strokeWidth + y1;
+                            rect.setVertex2D(x2, y2, x1, y1, x22, y22, x11, y11);
+                        }
+                    }
+                }
             }
         };
     }
