@@ -20,30 +20,39 @@ void LineRenderDemo::doTest() {
     float bottom = 400;
 
     //lt, rt
-    float vtx[6] = {left, top, 0.0f, right, top, 0.0f};
-    alfons::Line line;
-    line.lineWidth = 10;
-    line.setVertexes(vtx);
+    //float vtx[6] = {left, top, 0.0f, right, top, 0.0f};
+    alfons::draw::Line line;
+    line.strokeWidth = 10;
+    line.setVertexes(left, top, right, top);
     line.setColorF(.8f, .8f, 0.0f, 1.0f);
     lineRender.addLine(line);
 
     //lt, lb
-    float vtx2[6] = {left, top, 0.0f, left, bottom, 0.0f};
-    line.setVertexes(vtx2);
+    //float vtx2[6] = {left, top, 0.0f, left, bottom, 0.0f};
+    line.setVertexes(left, top, left, bottom);
     line.setColorF(.8f, .8f, 0.0f, 1.0f);
     lineRender.addLine(line);
 
     //rt, rb
-    float vtx3[6] = {right, top, 0.0f, right, bottom, 0.0f};
-    line.setVertexes(vtx3);
+    //float vtx3[6] = {right, top, 0.0f, right, bottom, 0.0f};
+    line.setVertexes(right, top, right, bottom);
     line.setColorF(.8f, .8f, 0.0f, 1.0f);
     lineRender.addLine(line);
 
     //lb, rb
-    float vtx4[6] = {left, bottom, 0.0f, right, bottom, 0.0f};
-    line.setVertexes(vtx4);
+    //float vtx4[6] = {left, bottom, 0.0f, right, bottom, 0.0f};
+    line.setVertexes(left, bottom, right, bottom);
     line.setColorF(.8f, .8f, 0.0f, 1.0f);
     lineRender.addLine(line);
+
+    alfons::draw::Rect rect;
+    rect.strokeWidth = 30;
+    rect.setColorF(1.0f, 0.0f, 0.0f, 1.0f);
+    rect.setRect(200, 500, 400, 700);
+    lineRender.addRect(rect, false);
+
+    rect.setRect(400, 0, 600, 200);
+    lineRender.addRect(rect, true);
 }
 
 void LineRenderDemo::draw() {
