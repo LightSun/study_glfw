@@ -31,6 +31,14 @@ public class RenderActivity extends AppCompatActivity {
         mRender.setUp(RenderActivity.this::setViewImpl);
     }
 
+    @Override
+    public void onDetachedFromWindow() {
+        if(mRender != null){
+            mRender.onDestroy();
+        }
+        super.onDetachedFromWindow();
+    }
+
     private void setViewImpl(){
         GLSurfaceView view = new GLSurfaceView(this);
         view.setEGLContextClientVersion(mRender.getEGLVersion());//for GLSurfaceView often need <uses-feature android:glEsVersion="0x00020000" />

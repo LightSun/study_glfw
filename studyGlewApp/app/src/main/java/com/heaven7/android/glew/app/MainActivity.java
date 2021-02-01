@@ -8,6 +8,7 @@ import com.heaven7.android.glew.app.render.FillRender;
 import com.heaven7.android.glew.app.render.FontRender;
 import com.heaven7.android.glew.app.render.LightDemoRender;
 import com.heaven7.android.glew.app.render.LineRenderDemo;
+import com.heaven7.android.glew.app.render.MultiRender;
 import com.heaven7.core.util.BundleHelper;
 import com.heaven7.core.util.PermissionHelper;
 
@@ -54,5 +55,6 @@ public class MainActivity extends AbsMainActivity {
         addRenderDemo(LightDemoRender.class, "light render demo");
         addRenderDemo(AirHockeyRenderer.class, "AirHockeyRenderer demo");
         addRenderDemo(FillRender.class, "FillRender demo");
+        addRenderDemo(MultiRender.class, "MultiRender demo");
     }
 }

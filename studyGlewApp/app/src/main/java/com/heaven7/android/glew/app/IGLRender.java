@@ -80,4 +80,8 @@ public abstract class IGLRender implements GLSurfaceView.Renderer {
         }
         return result;
     }
+
+    public void onDestroy() {
+
+    }
 }

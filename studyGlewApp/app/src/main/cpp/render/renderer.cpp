@@ -31,8 +31,8 @@ namespace alfons {
         line.setVertexes(rect.x1, y, rect.x2, y);
         lineRender.addLine(line);
 
-        LOGD("drawUnderLine: (%.2f, %.2f, %.2f, %.2f). marginTop = %d, y = %.2f",
-             rect.x1, rect.y1, rect.x2, rect.y2,  _glyph.glyph->baselineMarTop, y);
+      /*  LOGD("drawUnderLine: (%.2f, %.2f, %.2f, %.2f). marginTop = %d, y = %.2f",
+             rect.x1, rect.y1, rect.x2, rect.y2,  _glyph.glyph->baselineMarTop, y);*/
     }
 
     void Renderer::drawGlyph(const Quad &_quad, const AtlasGlyph &_glyph) {
@@ -279,6 +279,6 @@ namespace alfons {
             id++;
         }
         //TODO draw nothing , why ?
-        lineRender.draw();
+        //lineRender.draw();
     }
 }

@@ -94,7 +94,7 @@ public:
     void beginFrame(int width, int height) {
 
         glUseProgram(defaultShaderProgram);
-        lineRender.setViewPort(width, height);
+        //lineRender.setViewPort(width, height);
 
         projectionMatrix = glm::ortho(0.0,
                                       double(width),

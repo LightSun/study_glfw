@@ -52,6 +52,10 @@ public abstract class AbsNativeRender extends IGLRender {
     public void onDrawFrame(GL10 gl) {
         api.draw();
     }
+    @Override
+    public void onDestroy() {
+        api.destroy();
+    }
 }
 
  /* glClearColor(1, 1, 1, 1);
