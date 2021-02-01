@@ -93,6 +93,9 @@ extern "C" void onSetup(const char *fontDir) {
 
 
     auto layout = shaper.shape(font, str);
+    layout.getTextPaint().underlineColor = 0xff0000ff ; //rgba
+    layout.getTextPaint().drawUnderline = true;
+    layout.getTextPaint().underlineStroke = 10;
     layout.setScale(2.0f);
     l.push_back(layout);
     // BIDI - RTL paragraph

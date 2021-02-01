@@ -16,8 +16,11 @@ namespace alfons {
         float textSize;
         bool drawUnderline;
         bool drawDeleteLine;
-        int underlineColor;
+        unsigned int underlineColor;
         int deleteLineColor;
+        float underlineStroke;
+        float deleteStroke;
+        //line space
         float glyphSpace;
         float lineSpace;
 
@@ -27,6 +30,8 @@ namespace alfons {
             drawDeleteLine = false;
             glyphSpace = 0;
             lineSpace = 0;
+            underlineStroke = 1;
+            deleteStroke = 1;
         }
 
         inline float getScale() const {

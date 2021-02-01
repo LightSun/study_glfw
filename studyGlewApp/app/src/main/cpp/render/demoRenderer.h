@@ -94,6 +94,7 @@ public:
     void beginFrame(int width, int height) {
 
         glUseProgram(defaultShaderProgram);
+        lineRender.setViewPort(width, height);
 
         projectionMatrix = glm::ortho(0.0,
                                       double(width),
@@ -109,6 +110,7 @@ public:
         glEnableVertexAttribArray(texCoordAttrib);
 
         glEnable(GL_BLEND);
+        //for font can't use GL_ALPHA
         glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
     }
 

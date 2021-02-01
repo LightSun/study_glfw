@@ -24,8 +24,9 @@ namespace alfons{
         width = w;
         height = h;
     }
-    void LineRender::clearLines() {
+    void LineRender::clearAll() {
         lines.clear();
+        fillRects.clear();
     }
     void LineRender::addLine(alfons::draw::Line &line) {
         if(line.strokeWidth > 1){
@@ -76,38 +77,41 @@ namespace alfons{
         shader->destroy();
     }
     void LineRender::draw() {
+        shader->use();
+
         glm::mat4 projectionMatrix = glm::ortho(0.0, double(width),
                 double(height), 0.0,
                        -1.0, 1.0);
 
-        shader->use();
         glEnableVertexAttribArray(PositionHandle);
 
         float color[4];
-        //draw lines
-        for (int i = 0; i < lines.size(); ++i) {
-            auto& line = lines[i];
-            line.getColor(color);
+        if(!lines.empty()){
+            //draw lines
+            for (int i = 0; i < lines.size(); ++i) {
+                auto& line = lines[i];
+                line.getColor(color);
 
-            glLineWidth(line.strokeWidth);
+                glLineWidth(line.strokeWidth);
 
-            // vertex .absolute cors
-            glVertexAttribPointer(PositionHandle, COORDS_PER_VERTEX, GL_FLOAT, GL_FALSE,
-                    VertexStride, &line.vertexes[0]);
+                // vertex .absolute cors
+                glVertexAttribPointer(PositionHandle, COORDS_PER_VERTEX, GL_FLOAT, GL_FALSE,
+                                      VertexStride, &line.vertexes[0]);
 
-            // color
-            glUniform4fv(ColorHandle, 1, &color[0]);
+                // color
+                glUniform4fv(ColorHandle, 1, &color[0]);
 
-            //mvp
-            glUniformMatrix4fv(MVPHandle, 1, GL_FALSE, glm::value_ptr(projectionMatrix));
-            GLUT::glCheckError("glUniformMatrix4fv: MVPHandle");
+                //mvp
+                glUniformMatrix4fv(MVPHandle, 1, GL_FALSE, glm::value_ptr(projectionMatrix));
+                GLUT::glCheckError("glUniformMatrix4fv: MVPHandle");
 
-            // Draw
-            glDrawArrays(GL_LINES, 0, VertexCount);
+                // Draw
+                glDrawArrays(GL_LINES, 0, VertexCount);
+            }
         }
         //draw fill rects
         if(!fillRects.empty()){
-            u_short drawOrder[6] = { 0, 1, 2, 0, 2, 3 };
+            const short rectOrder[6] = { 0, 1, 2, 0, 2, 3 };
             for (int i = 0; i < fillRects.size(); ++i) {
                 auto& rect = fillRects[i];
                 rect.getColor(color);
@@ -119,7 +123,7 @@ namespace alfons{
                 glUniformMatrix4fv(MVPHandle, 1, GL_FALSE, glm::value_ptr(projectionMatrix));
 
                 //draw rect
-                glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_SHORT, &drawOrder[0]);
+                glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_SHORT, &rectOrder[0]);
             }
         }
         glDisableVertexAttribArray(PositionHandle);

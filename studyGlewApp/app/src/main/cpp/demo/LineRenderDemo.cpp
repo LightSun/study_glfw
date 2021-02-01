@@ -11,7 +11,7 @@ void LineRenderDemo::init(const char *fontDir) {
 
 void LineRenderDemo::doTest() {
     lineRender.setViewPort(width, height);
-    lineRender.clearLines();
+    lineRender.clearAll();
 
     //l, t, r, b
     float left = 200;

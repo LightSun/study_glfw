@@ -24,7 +24,15 @@ namespace alfons {
     Renderer::~Renderer() {}
 
     void Renderer::drawUnderLine(const alfons::Rect &rect, const AtlasGlyph &_glyph, TextPaint& paint) {
-         batches[_glyph.atlas].addUnderline(rect, _glyph.glyph->baselineMarTop, paint);
+        float y = rect.y1 + _glyph.glyph->baselineMarTop;
+        alfons::draw::Line line;
+        line.strokeWidth = paint.underlineStroke;
+        line.color = paint.underlineColor;
+        line.setVertexes(rect.x1, y, rect.x2, y);
+        lineRender.addLine(line);
+
+        LOGD("drawUnderLine: (%.2f, %.2f, %.2f, %.2f). marginTop = %d, y = %.2f",
+             rect.x1, rect.y1, rect.x2, rect.y2,  _glyph.glyph->baselineMarTop, y);
     }
 
     void Renderer::drawGlyph(const Quad &_quad, const AtlasGlyph &_glyph) {
@@ -101,12 +109,14 @@ namespace alfons {
     bool Renderer::init() {
         glGenBuffers(2, vbo);
         getIndices(MAX_QUADS);
+        lineRender.init();
         return true;
     }
 
     void Renderer::dispose() {
         glDeleteBuffers(1, vbo);
         glDeleteTextures(textures.size(), textures.data());
+        lineRender.destroy();
     }
 
     static void glCheckError(const char *str) {
@@ -227,10 +237,6 @@ namespace alfons {
                            GL_UNSIGNED_SHORT, 0);
         }
     }
-    void Renderer::drawLines(alfons::QuadBatch &quads) {
-         //TODO
-    }
-
     static void debugQuad(short size, short x, short y) {
         int s = size * 4;
 
@@ -272,5 +278,7 @@ namespace alfons {
             //debugQuad(512, id, 0);
             id++;
         }
+        //TODO draw nothing , why ?
+        lineRender.draw();
     }
 }

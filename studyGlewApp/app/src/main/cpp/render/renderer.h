@@ -37,7 +37,6 @@ namespace alfons {
         bool dirty;
 
         std::vector<Vertex> vertices;    //vertex of glyph
-        std::vector<Vertex> lineVertices;
 
         void clear() { vertices.clear(); }
 
@@ -70,11 +69,6 @@ namespace alfons {
             vertices.emplace_back(_quad.x4 * 4.0f, _quad.y4 * 4.0f, _glyph.u2, _glyph.v1, _state);
         }
 
-        void addUnderline(const Rect &_rect, int baselineMarginTop, TextPaint &paint) {
-            short x1 = _rect.x1 * 4.0f;
-            short y1 = _rect.y1 * 4.0f;
-            //TODO
-        }
     };
 
     class Renderer : public MeshCallback, public TextureCallback {
@@ -104,6 +98,7 @@ namespace alfons {
             for (auto &batch : batches) {
                 batch.vertices.clear();
             }
+            lineRender.clearAll();
         }
 
         void setTextState(uint32_t _state) { m_state = _state; }
@@ -134,17 +129,15 @@ namespace alfons {
 
         std::vector<uint> textures;
 
-        LineRender* lineRender;
-
         void getIndices(uint capacity);
 
         void drawVertices(QuadBatch &quads);
-
-        void drawLines(QuadBatch &quads);
 
 #ifdef USE_SDF
         std::vector<unsigned char> tmp_buffer;
 #endif
 
+    protected:
+        LineRender lineRender;
     };
 }

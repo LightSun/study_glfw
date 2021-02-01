@@ -21,7 +21,7 @@ namespace alfons {
     namespace draw{
         class GLShape {
         public:
-            int color; //rgba
+            unsigned int color; //rgba
             float strokeWidth;
             GLShape(){}
             GLShape(int color, float strokeWidth): color(color), strokeWidth(strokeWidth) {
@@ -253,7 +253,7 @@ namespace alfons {
 
         std::vector<draw::Line> lines;
         std::vector<draw::Rect> fillRects;
-        static constexpr short RectOrder[6] = { 0, 1, 2, 0, 2, 3 };
+        //static constexpr short RectOrder[6] = { 0, 1, 2, 0, 2, 3 };
 
         int width, height;
         GLUT::Shader* shader;
@@ -265,7 +265,7 @@ namespace alfons {
 
         void addRect(draw::Rect& rect,bool fill); //stroke or fill
 
-        void clearLines();
+        void clearAll();
 
         void addLine(draw::Line &line);
 
