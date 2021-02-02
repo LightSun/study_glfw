@@ -8,6 +8,7 @@ import com.heaven7.android.glew.app.IGLRender;
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 
+//TODO test font render with LineRender failed
 public class MultiRender extends IGLRender {
 
     private final FontRender fontRender;

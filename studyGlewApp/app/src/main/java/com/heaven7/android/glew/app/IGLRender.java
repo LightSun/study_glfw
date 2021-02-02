@@ -2,10 +2,14 @@ package com.heaven7.android.glew.app;
 
 import android.app.Activity;
 import android.opengl.GLES20;
+import android.opengl.GLES30;
 import android.opengl.GLSurfaceView;
+import android.util.Log;
 
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
+
+import javax.microedition.khronos.opengles.GL10;
 
 public abstract class IGLRender implements GLSurfaceView.Renderer {
 
@@ -39,7 +43,7 @@ public abstract class IGLRender implements GLSurfaceView.Renderer {
         linkProgram(vertex, frag);
     }
 
-    public void linkProgram(String vertexShader, String fragShader){
+    public int linkProgram(String vertexShader, String fragShader){
         int verS = GLES20.glCreateShader(GLES20.GL_VERTEX_SHADER);
         if (verS != 0) {
             GLES20.glShaderSource(verS, vertexShader);
@@ -63,6 +67,7 @@ public abstract class IGLRender implements GLSurfaceView.Renderer {
         }else {
             throw new IllegalStateException("glCreateProgram error");
         }
+        return mProgram;
     }
 
     public String loadTextFromAsset(String fname) {
@@ -83,6 +88,14 @@ public abstract class IGLRender implements GLSurfaceView.Renderer {
             e.printStackTrace();
         }
         return result;
+    }
+
+    public static void checkGlError(String glOperation) {
+        int error;
+        while ((error = GLES30.glGetError()) != GLES30.GL_NO_ERROR) {
+            Log.e("IGLRender", glOperation + ": glError " + error);
+            throw new RuntimeException(glOperation + ": glError " + error);
+        }
     }
 
     public void onDestroy() {
