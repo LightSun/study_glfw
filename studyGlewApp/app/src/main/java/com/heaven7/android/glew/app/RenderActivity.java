@@ -40,7 +40,7 @@ public class RenderActivity extends AppCompatActivity {
     }
 
     private void setViewImpl(){
-        GLSurfaceView view = new GLSurfaceView(this);
+        GLSurfaceView view = mRender.createGLSurfaceView(this);
         view.setEGLContextClientVersion(mRender.getEGLVersion());//for GLSurfaceView often need <uses-feature android:glEsVersion="0x00020000" />
         view.setRenderer(mRender);
         view.setRenderMode(mRender.getRenderMode());

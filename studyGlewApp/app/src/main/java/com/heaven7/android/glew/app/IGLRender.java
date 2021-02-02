@@ -29,6 +29,10 @@ public abstract class IGLRender implements GLSurfaceView.Renderer {
         next.run();
     }
 
+    public GLSurfaceView createGLSurfaceView(Activity activity) {
+        return new GLSurfaceView(activity);
+    }
+
     public void loadAndLinkShaderFromAssets(String vertexPath, String fragPath){
         String vertex = loadTextFromAsset(vertexPath);
         String frag = loadTextFromAsset(fragPath);
