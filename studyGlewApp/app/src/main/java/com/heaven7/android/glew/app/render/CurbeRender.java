@@ -6,11 +6,12 @@ import android.opengl.GLSurfaceView;
 import android.opengl.Matrix;
 
 import com.heaven7.android.glew.app.IGLRender;
+import com.heaven7.android.glew.app.view.CurbeGlSurfaceView;
 
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 
-public class CurbeRender extends IGLRender {
+public class CurbeRender extends IGLRender implements CurbeGlSurfaceView.IRender {
 
     private int mWidth;
     private int mHeight;
@@ -29,14 +30,16 @@ public class CurbeRender extends IGLRender {
     private final float[] mViewMatrix = new float[16];
     private final float[] mRotationMatrix = new float[16];
 
+    private int count;
+
     public CurbeRender(Activity context) {
         super(context);
     }
 
     @Override
     public GLSurfaceView createGLSurfaceView(Activity activity) {
-        GLSurfaceView view = new GLSurfaceView(activity);
-        view.setEGLConfigChooser(8, 8, 8, 8, 16, 0);
+        CurbeGlSurfaceView view = new CurbeGlSurfaceView(activity);
+        //view.setEGLConfigChooser(8, 8, 8, 8, 16, 0);
         return view;
     }
     @Override
@@ -94,6 +97,10 @@ public class CurbeRender extends IGLRender {
 
         //change the angle, so the cube will spin.
         mAngle += 0.4;
+        /*if(count ++ >= 10){
+            mAngle += 0.4;
+            count = 0;
+        }*/
     }
 
     //used the touch listener to move the cube up/down (y) and left/right (x)
