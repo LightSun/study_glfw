@@ -111,7 +111,7 @@ public:
                float offsetX = 0, float offsetY = 0);
 
     //-----------------------------
-    void measure(LineLayout& line, float maxWidth, float maxHeight, float out[2]);
+    void measure(LineLayout& line, float maxWidth, float maxHeight, float* out);
 
     QuadMatrix& matrix() { return *m_matrix; }
 

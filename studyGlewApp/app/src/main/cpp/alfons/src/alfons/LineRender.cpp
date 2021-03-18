@@ -127,5 +127,6 @@ namespace alfons{
             }
         }
         glDisableVertexAttribArray(PositionHandle);
+        shader->destroy();
     }
 }

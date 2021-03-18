@@ -278,9 +278,10 @@ namespace alfons {
     }
     //---------------------- measures --------------
     void TextBatcher::measure(alfons::LineLayout &_line, float maxWidth, float maxHeight,
-                              float out[2]) {
+                              float* out) {
 
-        memset(out, 0, 2); //wh
+        out[0] = 0;
+        out[1] = 0;
         if (_line.shapes().empty()) {
             return;
         }
@@ -296,7 +297,7 @@ namespace alfons {
         size_t startShape = 0;
 
         LineMetrics _metrics;//
-        glm::vec2 _position = {0, 0};
+        glm::vec2 _position = {0.0f, 0.0f};
 
         for (auto &shape : _line.shapes()) {
             LOGD("shape.cluster = %d, ", shape.cluster);
@@ -352,7 +353,7 @@ namespace alfons {
         }
         _position.x = adv;
         LOGD("measure:  _position.xy = (%.2f, %.2f), wh = (%.2f, %.2f)",
-                _position.x, _position.y, _metrics.width(), _metrics.height());
+             _position.x, _position.y, _metrics.width(), _metrics.height());
     }
 
 }

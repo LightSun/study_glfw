@@ -19,7 +19,7 @@
  * TODO:
  *
  * Implementing the hermite curve (with bias and tension) would be a must:
- * http://paulbourke.net/miscellaneous/interpolation
+ * http://paulbourke.net/miscellaneous/interpolation (曲线坐标计算)
  */
 
 #pragma once

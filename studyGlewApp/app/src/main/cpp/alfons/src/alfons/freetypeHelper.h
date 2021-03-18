@@ -85,6 +85,7 @@ struct GlyphData {
         x1 = x0 + ftSlot->bitmap.width;
         y0 = -ftSlot->bitmap_top;
         y1 = y0 + ftSlot->bitmap.rows;
+        //current only focus hor layout
         horBaseline = y0 + ftSlot->metrics.horiBearingY;
 
         return true;
