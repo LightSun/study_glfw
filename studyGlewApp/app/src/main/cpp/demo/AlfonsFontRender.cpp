@@ -5,6 +5,8 @@
 #include <render/gl.h>
 #include "AlfonsFontRender.h"
 
+//opencv: 显示中文
+//https://blog.csdn.net/qq_35705332/article/details/90603371?utm_medium=distribute.pc_relevant.none-task-blog-baidujs_title-4&spm=1001.2101.3001.4242
 extern "C" void onSetup(const char *fontDir);
 extern "C" void onDraw(int width, int height);
 extern "C" void doTest0(int width, int height);
